@@ -35,7 +35,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    "https://velvetnestblog.vercel.app"
+    "https://www.thevelvetnest.site"
   ),
   
 
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "VelvetNest",
-      url: "https://velvetnestblog.vercel.app",
+      url: "https://www.thevelvetnest.site",
     },
   ],
 
@@ -114,7 +114,7 @@ other: {
 },
   alternates: {
     canonical:
-      "https://velvetnestblog.vercel.app",
+      "https://www.thevelvetnest.site",
   },
 
   openGraph: {
@@ -122,7 +122,7 @@ other: {
 
     locale: "en_US",
 
-    url: "https://velvetnestblog.vercel.app",
+    url: "https://www.thevelvetnest.site",
 
     siteName: "VelvetNest",
 
@@ -242,9 +242,9 @@ export default function RootLayout({
       "@context": "https://schema.org",
       "@type": "Organization",
       name: "VelvetNest",
-      url: "https://velvetnestblog.vercel.app",
+      url: "https://www.thevelvetnest.site",
       logo:
-        "https://velvetnestblog.vercel.app/logo.png",
+        "https://www.thevelvetnest.site/logo.png",
       sameAs: [
         "https://www.pinterest.com/velvetnestworld"
       ]
@@ -258,11 +258,11 @@ export default function RootLayout({
       "@context": "https://schema.org",
       "@type": "WebSite",
       name: "VelvetNest",
-      url: "https://velvetnestblog.vercel.app",
+      url: "https://www.thevelvetnest.site",
       potentialAction: {
         "@type": "SearchAction",
         target:
-          "https://velvetnestblog.vercel.app/search?q={search_term_string}",
+          "https://www.thevelvetnest.site/search?q={search_term_string}",
         "query-input":
           "required name=search_term_string",
       },
