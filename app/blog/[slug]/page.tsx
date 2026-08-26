@@ -177,7 +177,7 @@ export async function generateMetadata({
 
       type: "article",
 
-      url: `https://velvetnestblog.vercel.app/blog/${post.slug}`,
+      url: `https://www.thevelvetnest.site/blog/${post.slug}`,
 
       images:
         post.mainImage?.asset?.url
@@ -211,7 +211,7 @@ export async function generateMetadata({
 
     alternates: {
       canonical:
-        `https://velvetnestblog.vercel.app/blog/${post.slug}`,
+        `https://www.thevelvetnest.site/blog/${post.slug}`,
     },
   }
 }
