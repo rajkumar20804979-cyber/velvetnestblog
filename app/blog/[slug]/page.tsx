@@ -13,7 +13,7 @@ import { PortableText } from "@portabletext/react"
 import { CustomPortableText } from "@/components/portable-text"
 import slugify from "slugify"
 import readingTime from "reading-time"
-
+import { AffiliateDisclosure } from "@/components/affiliate-disclosure"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ReadingProgress } from "@/components/reading-progress"
@@ -782,10 +782,12 @@ export default async function BlogPostPage({
         <section className="pb-24 pt-8">
           <div className="mx-auto max-w-4xl px-4 md:px-10">
             <div className="mb-14 lg:hidden">
-              <MobileTOC items={toc} />
-            </div>
+  <MobileTOC items={toc} />
+</div>
 
-            <article className="prose prose-neutral max-w-none">
+<AffiliateDisclosure />
+
+<article className="prose prose-neutral max-w-none">
   {post.markdownBody ? (
     <ReactMarkdown>
       {post.markdownBody}
