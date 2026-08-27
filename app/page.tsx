@@ -26,9 +26,18 @@ import { urlFor } from "@/sanity/lib/image"
 export default async function HomePage() {
 
   /* HERO */
+  /* CATEGORIES */
+  /* POSTS */
+  const [
+  hero,
+  categories,
+  searchPosts,
+  blogPosts,
+  storefrontCTA,
+  about,
+] = await Promise.all([
 
-const hero =
-  await client.fetch(`
+  client.fetch(`
     *[_type == "hero"][0]{
       eyebrow,
       title,
@@ -37,56 +46,74 @@ const hero =
       buttonLink,
       heroImage
     }
-  `)
+  `),
 
-  /* CATEGORIES */
+  client.fetch(`
+    *[_type == "category"]
+    | order(title asc){
+      _id,
+      title,
+      "slug": slug.current,
+      image,
+      "count": count(*[_type == "post" && references(^._id)])
+    }
+  `),
 
-  const categories =
-    await client.fetch(`
-      *[_type == "category"]
-      | order(title asc){
-        _id,
-        title,
-        "slug": slug.current,
-        image,
-        "count": count(*[_type == "post" && references(^._id)])
-      }
-    `)
+  client.fetch(`
+    *[_type == "post"]{
+      title,
+      excerpt,
+      "slug": slug.current,
+      "category": category->title,
+      tags,
+      body
+    }
+  `),
 
-  /* POSTS */
-const searchPosts =
-  await client.fetch(`
-  *[_type == "post"]{
-    title,
-    excerpt,
-    "slug": slug.current,
-    "category": category->title,
-    tags,
-    body
-  }
-`)
+  client.fetch(`
+    *[_type=="post"]
+    | order(featured desc, publishedAt desc)[0...6]{
+      _id,
+      title,
+      excerpt,
+      publishedAt,
+      "slug": slug.current,
+      mainImage,
+      featured,
+      markdownBody,
+      body,
+      "category": category->title
+    }
+  `),
+
+  client.fetch(`
+    *[_type == "storefrontCTA"][0]{
+      title,
+      description,
+      buttonText,
+      buttonLink,
+      image
+    }
+  `),
+
+  client.fetch(`
+    *[_type == "aboutPage"][0]{
+      title,
+      subtitle,
+      description,
+      image
+    }
+  `),
+
+])
+
   const processedSearchPosts =
   searchPosts.map((post: any) => ({
     ...post,
     searchContent:
       extractPortableText(post.body),
   }))
-  const blogPosts =
-await client.fetch(`
-*[_type=="post"]
-|order(featured desc,publishedAt desc)[0...6]{
-  _id,
-  title,
-  excerpt,
-  publishedAt,
-  "slug": slug.current,
-  mainImage,
-  featured,
-  markdownBody,
-  body,
-  "category": category->title
-}
-`)
+  
   const processedBlogPosts =
   blogPosts.map((post: any) => {
 
@@ -103,27 +130,6 @@ await client.fetch(`
         `${Math.ceil(stats.minutes)} min read`,
     }
   })
-
-  const storefrontCTA =
-  await client.fetch(`
-    *[_type == "storefrontCTA"][0]{
-      title,
-      description,
-      buttonText,
-      buttonLink,
-      image
-    }
-  `)
-
-  const about =
-  await client.fetch(`
-    *[_type == "aboutPage"][0]{
-      title,
-      subtitle,
-      description,
-      image
-    }
-  `)
 
 const featuredPost =
 processedBlogPosts.find(
