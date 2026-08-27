@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Instagram, Youtube, Mail } from "lucide-react"
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { ContactForm } from "@/components/contact-form"
 
 export const metadata: Metadata = {
   title: "Contact | VelvetNest - Get in Touch",
@@ -55,12 +55,12 @@ export default function ContactPage() {
       <Header />
 
       <main>
-        {/* ===================================================
-            HERO SECTION
-        =================================================== */}
+
+        {/* HERO */}
 
         <section className="bg-secondary/30 py-16 md:py-24">
           <div className="mx-auto max-w-7xl px-4 text-center">
+
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
               Get in Touch
             </p>
@@ -73,22 +73,21 @@ export default function ContactPage() {
               Have a question, collaboration idea, or feedback? Fill out the
               form below or reach out directly by email.
             </p>
+
           </div>
         </section>
 
-        {/* ===================================================
-            CONTACT FORM & INFO
-        =================================================== */}
+        {/* CONTACT FORM & INFO */}
 
         <section className="py-16 md:py-24">
           <div className="mx-auto max-w-7xl px-4">
+
             <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
 
-              {/* ===================================================
-                  CONTACT FORM
-              =================================================== */}
+              {/* FORM */}
 
               <div>
+
                 <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                   Send a Message
                 </h2>
@@ -97,154 +96,32 @@ export default function ContactPage() {
                   I do my best to respond within 2–3 business days.
                 </p>
 
-                <form className="mt-8 space-y-6">
-                  {/* Name */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label
-                        htmlFor="firstName"
-                        className="block text-sm font-medium"
-                      >
-                        First Name
-                      </label>
+                <ContactForm />
 
-                      <Input
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        required
-                        className="mt-2"
-                        placeholder="Jane"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="lastName"
-                        className="block text-sm font-medium"
-                      >
-                        Last Name
-                      </label>
-
-                      <Input
-                        id="lastName"
-                        name="lastName"
-                        type="text"
-                        required
-                        className="mt-2"
-                        placeholder="Doe"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium"
-                    >
-                      Email
-                    </label>
-
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      className="mt-2"
-                      placeholder="jane@example.com"
-                    />
-                  </div>
-
-                  {/* Subject */}
-                  <div>
-                    <label
-                      htmlFor="subject"
-                      className="block text-sm font-medium"
-                    >
-                      Subject
-                    </label>
-
-                    <select
-                      id="subject"
-                      name="subject"
-                      className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                      required
-                    >
-                      <option value="">Select a topic</option>
-                      <option value="general">General Inquiry</option>
-                      <option value="collaboration">
-                        Brand Collaboration
-                      </option>
-                      <option value="press">Press &amp; Media</option>
-                      <option value="feedback">Feedback</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  {/* Message */}
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-sm font-medium"
-                    >
-                      Message
-                    </label>
-
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows={5}
-                      required
-                      className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                      placeholder="Your message..."
-                    />
-                  </div>
-
-                  {/* Privacy notice */}
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    By submitting this form, you agree that VelvetNest may use
-                    the information you provide to respond to your inquiry.
-                    Please see our{" "}
-                    <Link
-                      href="/privacy-policy"
-                      className="text-accent underline-offset-4 hover:underline"
-                    >
-                      Privacy Policy
-                    </Link>{" "}
-                    for more information.
-                  </p>
-
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full sm:w-auto"
-                  >
-                    Send Message
-                  </Button>
-                </form>
               </div>
 
-              {/* ===================================================
-                  CONTACT INFO
-              =================================================== */}
+              {/* CONTACT INFO */}
 
               <div className="lg:pl-8">
+
                 <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                   Contact Info
                 </h2>
 
                 <div className="mt-8 space-y-6">
+
                   {contactInfo.map((item) => (
                     <div
                       key={item.label}
                       className="flex items-start gap-4"
                     >
+
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary">
                         <item.icon className="h-5 w-5 text-accent" />
                       </div>
 
                       <div>
+
                         <p className="text-sm font-medium text-muted-foreground">
                           {item.label}
                         </p>
@@ -261,16 +138,18 @@ export default function ContactPage() {
                             {item.value}
                           </p>
                         )}
+
                       </div>
+
                     </div>
                   ))}
+
                 </div>
 
-                {/* ===================================================
-                    SOCIAL LINKS
-                =================================================== */}
+                {/* SOCIAL LINKS */}
 
                 <div className="mt-12">
+
                   <h3 className="text-lg font-semibold">
                     Follow Along
                   </h3>
@@ -283,6 +162,7 @@ export default function ContactPage() {
                   <div className="mt-4 flex flex-wrap items-center gap-4">
 
                     {/* Pinterest */}
+
                     <Link
                       href="https://www.pinterest.com/velvetnestworld/"
                       target="_blank"
@@ -302,6 +182,7 @@ export default function ContactPage() {
                     </Link>
 
                     {/* Instagram */}
+
                     <Link
                       href="https://www.instagram.com/velvetnestworld/"
                       target="_blank"
@@ -313,6 +194,7 @@ export default function ContactPage() {
                     </Link>
 
                     {/* YouTube */}
+
                     <Link
                       href="https://www.youtube.com/@velvetnestworld"
                       target="_blank"
@@ -322,14 +204,15 @@ export default function ContactPage() {
                       <Youtube className="h-4 w-4" />
                       YouTube
                     </Link>
+
                   </div>
+
                 </div>
 
-                {/* ===================================================
-                    RESPONSE TIME
-                =================================================== */}
+                {/* RESPONSE TIME */}
 
                 <div className="mt-12 rounded-2xl border border-border bg-secondary/30 p-6">
+
                   <h3 className="font-semibold">
                     Response Time
                   </h3>
@@ -340,28 +223,34 @@ export default function ContactPage() {
                     please select &quot;Press &amp; Media&quot; as your
                     subject.
                   </p>
+
                 </div>
+
               </div>
+
             </div>
+
           </div>
         </section>
 
-        {/* ===================================================
-            FAQ SECTION
-        =================================================== */}
+        {/* FAQ */}
 
         <section className="border-t border-border bg-secondary/30 py-16 md:py-24">
+
           <div className="mx-auto max-w-3xl px-4">
+
             <h2 className="text-center text-3xl font-semibold tracking-tight md:text-4xl">
               Frequently Asked Questions
             </h2>
 
             <div className="mt-12 space-y-6">
+
               {faqs.map((faq) => (
                 <div
                   key={faq.question}
                   className="rounded-2xl border border-border bg-card p-6"
                 >
+
                   <h3 className="font-semibold">
                     {faq.question}
                   </h3>
@@ -369,14 +258,19 @@ export default function ContactPage() {
                   <p className="mt-2 text-muted-foreground">
                     {faq.answer}
                   </p>
+
                 </div>
               ))}
+
             </div>
+
           </div>
+
         </section>
+
       </main>
 
       <Footer />
     </div>
   )
-                      }
+        }
