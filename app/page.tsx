@@ -60,15 +60,15 @@ export default async function HomePage() {
   `),
 
   client.fetch(`
-    *[_type == "post"]{
-      title,
-      excerpt,
-      "slug": slug.current,
-      "category": category->title,
-      tags,
-      body
-    }
-  `),
+  *[_type == "post"]{
+    title,
+    excerpt,
+    "slug": slug.current,
+    "category": category->title,
+    tags,
+    "searchContent": pt::text(body)
+  }
+`),
 
   client.fetch(`
     *[_type=="post"]
@@ -107,13 +107,7 @@ export default async function HomePage() {
 
 ])
 
-  const processedSearchPosts =
-  searchPosts.map((post: any) => ({
-    ...post,
-    searchContent:
-      extractPortableText(post.body),
-  }))
-  
+
   const processedBlogPosts =
   blogPosts.map((post: any) => {
 
