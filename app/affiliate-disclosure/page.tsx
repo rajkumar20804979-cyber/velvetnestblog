@@ -25,7 +25,7 @@ export default function AffiliateDisclosurePage() {
               Affiliate Disclosure
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-              Transparency is important to us. Here&apos;s how affiliate links work on VelvetNest.
+              Transparency is important to us. Here's how affiliate links work on VelvetNest.
             </p>
           </div>
         </section>
@@ -49,10 +49,10 @@ export default function AffiliateDisclosurePage() {
               <h2>What Are Affiliate Links?</h2>
               <p>
                 Affiliate links are special URLs that track when a reader clicks through from my 
-                website to a retailer&apos;s site. If you make a purchase after clicking one of these 
+                website to a retailer's site. If you make a purchase after clicking one of these 
                 links, I receive a small commission from the retailer. This comes at absolutely 
                 no additional cost to you—the price you pay is exactly the same whether you use 
-                my link or go directly to the retailer&apos;s website.
+                my link or go directly to the retailer's website.
               </p>
 
               <h2>Amazon Associates Program</h2>
@@ -134,17 +134,17 @@ export default function AffiliateDisclosurePage() {
               <h2>Your Choice</h2>
               <p>
                 You are under no obligation to use my affiliate links. If you prefer, you can 
-                always go directly to a retailer&apos;s website to make your purchase. However, 
+                always go directly to a retailer's website to make your purchase. However, 
                 if you find my content helpful and want to support VelvetNest at no cost to you, 
                 using my affiliate links is a wonderful way to do so.
               </p>
 
               <h2>Questions?</h2>
               <p>
-                If you have any questions about affiliate links or this disclosure, please don&apos;t 
+                If you have any questions about affiliate links or this disclosure, please don't 
                 hesitate to reach out. You can contact me through the{" "}
                 <Link href="/contact">Contact Page</Link> or email me at{" "}
-                <a href="mailto:velvetnest.contact@gmail.com">velvetnest.contact@gmail.com</a>.
+                <a href="mailto:hello@thevelvetnest.site">hello@thevelvetnest.site</a>.
               </p>
 
               <p className="mt-8 text-sm">
