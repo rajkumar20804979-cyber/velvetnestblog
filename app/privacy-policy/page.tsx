@@ -143,7 +143,7 @@ export default function PrivacyPolicyPage() {
               </ul>
               <p>
                 To exercise any of these rights, please contact us at{" "}
-                <a href="mailto:privacy@velvetnest.com">privacy@velvetnest.com</a>.
+                <a href="mailto:hello@thevelvetnest.site">hello@thevelvetnest.site</a>.
               </p>
 
               <h2>Children&apos;s Privacy</h2>
@@ -167,7 +167,7 @@ export default function PrivacyPolicyPage() {
               <ul>
                 <li>
                   By email:{" "}
-                  <a href="mailto:privacy@velvetnest.com">privacy@velvetnest.com</a>
+                  <a href="mailto:hello@thevelvetnest.site">hello@thevelvetnest.site</a>
                 </li>
                 <li>
                   By visiting our{" "}
