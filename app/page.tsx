@@ -155,12 +155,14 @@ md:min-h-[650px]">
     {hero?.heroImage && (
 
       <Image
-        src={urlFor(hero.heroImage).width(2200).url()}
-        alt="VelvetNest Hero"
-        fill
-        priority
-        className="object-cover"
-      />
+  src={urlFor(hero.heroImage).width(1600).url()}
+  alt="VelvetNest Hero"
+  fill
+  priority
+  sizes="100vw"
+  quality={75}
+  className="object-cover"
+/>
 
     )}
 
