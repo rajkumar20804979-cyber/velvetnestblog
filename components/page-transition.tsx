@@ -32,10 +32,7 @@ export function PageTransition({
 
       <motion.div
         key={pathname}
-        initial={{
-          opacity: 0,
-          y: 18,
-        }}
+        initial={false}
         animate={{
           opacity: 1,
           y: 0,
