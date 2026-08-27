@@ -159,6 +159,7 @@ md:min-h-[650px]">
   alt="VelvetNest Hero"
   fill
   priority
+  fetchPriority="high"
   sizes="100vw"
   quality={75}
   className="object-cover"
