@@ -265,7 +265,7 @@ export function Footer() {
                 {/* EMAIL */}
 
                 <Link
-                  href="mailto:velvetnest.contact@gmail.com"
+                  href="mailto:hello@thevelvetnest.site"
                   aria-label="Email"
                   className="
                     text-muted-foreground
