@@ -12,7 +12,7 @@ export default function Clarity() {
   return (
     <Script
       id="microsoft-clarity"
-      strategy="afterInteractive"
+      strategy="lazyOnload"
     >
       {`
         (function(c,l,a,r,i,t,y){
