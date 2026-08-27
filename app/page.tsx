@@ -138,7 +138,7 @@ processedBlogPosts
 
     <div className="min-h-screen bg-background text-foreground">
 
-      <Header posts={processedSearchPosts} />
+      <Header posts={searchPosts} />
 
       <main>
 
