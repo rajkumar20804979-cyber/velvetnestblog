@@ -37,8 +37,8 @@ export default function PrivacyPolicyPage() {
               <p>
                 Welcome to VelvetNest. Your privacy is important to us. This Privacy Policy explains 
                 how we collect, use, disclose, and safeguard your information when you visit our 
-                website velvetnest.com, including any other media form, media channel, mobile website, 
-                or mobile application related or connected thereto.
+                website thevelvetnest.site, including any other media form, media channel or mobile website
+                related or connected thereto.
               </p>
 
               <h2>Information We Collect</h2>
