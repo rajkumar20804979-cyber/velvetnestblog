@@ -8,10 +8,10 @@ import { Input } from "@/components/ui/input"
 
 export const metadata: Metadata = {
   title: "Contact | VelvetNest - Get in Touch",
-  description: "Have a question, collaboration idea, or just want to say hello? I&apos;d love to hear from you.",
+  description: "Have a question, collaboration idea, or just want to say hello? I'd love to hear from you.",
   openGraph: {
     title: "Contact | VelvetNest",
-    description: "Have a question, collaboration idea, or just want to say hello? I&apos;d love to hear from you.",
+    description: "Have a question, collaboration idea, or just want to say hello? I'd love to hear from you.",
   },
 }
 
@@ -19,8 +19,8 @@ const contactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "hello@velvetnest.com",
-    href: "mailto:hello@velvetnest.com",
+    value: "hello@thevelvetnest.site",
+    href: "mailto:hello@thevelvetnest.site",
   },
   {
     icon: MapPin,
@@ -33,15 +33,15 @@ const contactInfo = [
 const faqs = [
   {
     question: "How do I shop your Amazon finds?",
-    answer: "Simply click on any product on the Amazon Finds page, and you&apos;ll be redirected to the product on Amazon. As an Amazon Associate, I earn from qualifying purchases at no extra cost to you.",
+    answer: "Simply click on any product on the Amazon Finds page, and you'll be redirected to the product on Amazon. As an Amazon Associate, I earn from qualifying purchases at no extra cost to you.",
   },
   {
     question: "Do you accept sponsored content?",
-    answer: "I selectively partner with brands that align with VelvetNest&apos;s values and aesthetic. All sponsored content is clearly disclosed, and I only recommend products I genuinely love.",
+    answer: "I selectively partner with brands that align with VelvetNest's values and aesthetic. All sponsored content is clearly disclosed, and I only recommend products I genuinely love.",
   },
   {
     question: "Can I submit a guest post?",
-    answer: "I&apos;m not currently accepting guest posts, but I appreciate your interest! Follow along on social media for any changes to this policy.",
+    answer: "I'm not currently accepting guest posts, but I appreciate your interest! Follow along on social media for any changes to this policy.",
   },
   {
     question: "How often do you post new content?",
@@ -62,11 +62,11 @@ export default function ContactPage() {
               Get in Touch
             </p>
             <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl lg:text-6xl">
-              Let&apos;s Connect
+              Let's Connect
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
               Have a question, collaboration idea, or just want to say hello? 
-              I&apos;d love to hear from you. Fill out the form below or reach out directly.
+              I'd love to hear from you. Fill out the form below or reach out directly.
             </p>
           </div>
         </section>
@@ -200,7 +200,7 @@ export default function ContactPage() {
                   </p>
                   <div className="mt-4 flex items-center gap-4">
                     <Link
-                      href="https://pinterest.com"
+                      href="https://www.pinterest.com/velvetnestworld/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary"
@@ -211,7 +211,7 @@ export default function ContactPage() {
                       Pinterest
                     </Link>
                     <Link
-                      href="https://instagram.com"
+                      href="https://www.instagram.com/velvetnestworld/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary"
@@ -220,7 +220,7 @@ export default function ContactPage() {
                       Instagram
                     </Link>
                     <Link
-                      href="https://youtube.com"
+                      href="https://www.youtube.com/@velvetnestworld"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary"
