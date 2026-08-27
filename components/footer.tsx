@@ -42,26 +42,31 @@ const footerLinks = {
   ],
 
   company: [
-    {
-      href: "/about",
-      label: "About",
-    },
+  {
+    href: "/about",
+    label: "About",
+  },
 
-    {
-      href: "/contact",
-      label: "Contact",
-    },
+  {
+    href: "/contact",
+    label: "Contact",
+  },
 
-    {
-      href: "/privacy-policy",
-      label: "Privacy Policy",
-    },
+  {
+    href: "/privacy-policy",
+    label: "Privacy Policy",
+  },
 
-    {
-      href: "/affiliate-disclosure",
-      label: "Affiliate Disclosure",
-    },
-  ],
+  {
+    href: "/terms",
+    label: "Terms & Conditions",
+  },
+
+  {
+    href: "/affiliate-disclosure",
+    label: "Affiliate Disclosure",
+  },
+],
 }
 
 /* =========================================================
