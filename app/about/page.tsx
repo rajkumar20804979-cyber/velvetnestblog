@@ -64,7 +64,7 @@ export default function AboutPage() {
                 </p>
                 <div className="mt-8 flex items-center gap-4">
                   <Link
-                    href="https://pin.it/4JM74JcPc"
+                    href="https://www.pinterest.com/velvetnestworld/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-full border border-border p-3 text-foreground/70 transition-colors hover:bg-secondary hover:text-foreground"
@@ -267,9 +267,9 @@ export default function AboutPage() {
                   <Link href="/contact">Get in Touch</Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">
-                  <a href="mailto:velvetnest.contact@gmail.com">
+                  <a href="mailto:hello@thevelvetnest.site">
                     <Mail className="mr-2 h-4 w-4" />
-                    velvetnest.contact@gmail.com
+                    hello@thevelvetnest.site
                   </a>
                 </Button>
               </div>
