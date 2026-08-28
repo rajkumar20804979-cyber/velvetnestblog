@@ -35,21 +35,25 @@ export default defineType({
         "Enter the 10-character Amazon ASIN, for example: B0XXXXXXXX",
       hidden: ({ parent }) => parent?.inputType !== "asin",
       validation: (Rule) =>
-        Rule.custom((value, context) => {
-          if (context.parent?.inputType !== "asin") {
-            return true
-          }
+  Rule.custom((value, context) => {
+    const parent = context.parent as
+      | { inputType?: string }
+      | undefined
 
-          if (!value) {
-            return "ASIN is required."
-          }
+    if (parent?.inputType !== "asin") {
+      return true
+    }
 
-          if (!/^[A-Z0-9]{10}$/i.test(value)) {
-            return "ASIN must be exactly 10 letters/numbers."
-          }
+    if (!value) {
+      return "ASIN is required."
+    }
 
-          return true
-        }),
+    if (!/^[A-Z0-9]{10}$/i.test(value)) {
+      return "ASIN must be exactly 10 letters/numbers."
+    }
+
+    return true
+  }),
     }),
 
     defineField({
@@ -61,17 +65,21 @@ export default defineType({
       hidden: ({ parent }) =>
         parent?.inputType !== "affiliateLink",
       validation: (Rule) =>
-        Rule.custom((value, context) => {
-          if (context.parent?.inputType !== "affiliateLink") {
-            return true
-          }
+  Rule.custom((value, context) => {
+    const parent = context.parent as
+      | { inputType?: string }
+      | undefined
 
-          if (!value) {
-            return "Amazon affiliate link is required."
-          }
+    if (parent?.inputType !== "affiliateLink") {
+      return true
+    }
 
-          return true
-        }),
+    if (!value) {
+      return "Amazon affiliate link is required."
+    }
+
+    return true
+  }),
     }),
 
     defineField({
