@@ -23,6 +23,7 @@ import MobileTOC from "@/components/mobile-toc"
 import ShareButtons from "./ShareButtons"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
+import { enrichAmazonProducts } from "@/lib/amazon/enrich-products"
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -626,14 +627,17 @@ export default async function BlogPostPage({
 }
 )
 
-  const toc = getTableOfContents(post.body || [])
+const enrichedBody = Array.isArray(post.body)
+  ? await enrichAmazonProducts(post.body)
+  : post.body
 
-  const plainText = post.markdownBody
+const toc = getTableOfContents(enrichedBody || [])
+
+const plainText = post.markdownBody
   ? post.markdownBody
-  : getPlainText(post.body || [])
+  : getPlainText(enrichedBody || [])
 
-  const stats = readingTime(plainText)
-
+const stats = readingTime(plainText)
   return (
     <>
       <ReadingProgress />
@@ -793,7 +797,7 @@ export default async function BlogPostPage({
       {post.markdownBody}
     </ReactMarkdown>
   ) : (
-    <CustomPortableText value={post.body} />
+    <CustomPortableText value={enrichedBody} />
   )}
 </article>
 
