@@ -3,6 +3,7 @@ import category from "./category"
 import amazonFind from "./amazonFind"
 import hero from "./hero"
 import aboutPage from "./aboutPage"
+import amazonProduct from "./amazonProduct"
 import storefrontCTA from "./storefrontCTA"
 import { callout } from "./objects/callout"
 import table from './table'
@@ -22,5 +23,6 @@ tableCell,
   storefrontCTA,
   comparison,
   callout,
+  amazonProduct,
   aboutPage,
 ]
