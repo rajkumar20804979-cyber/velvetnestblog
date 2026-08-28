@@ -13,6 +13,27 @@ export default defineType({
     }),
 
     defineField({
+  name: "asin",
+  title: "Amazon ASIN",
+  type: "string",
+  description:
+    "Enter the Amazon product ASIN. Example: B0XXXXXXXX",
+  validation: (Rule) =>
+    Rule.min(10)
+      .max(10)
+      .error("ASIN must be exactly 10 characters."),
+}),
+
+    defineField({
+      name: "recommendation",
+      title: "Why We Recommend It",
+      type: "text",
+      rows: 4,
+      description:
+        "Your editorial recommendation or reason for choosing this product.",
+    }),
+
+    defineField({
       name: "price",
       title: "Price",
       type: "string",
