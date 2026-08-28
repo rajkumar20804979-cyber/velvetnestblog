@@ -1,3 +1,4 @@
+import { ProductCard } from "@/components/cards"
 import { PortableText } from "@portabletext/react"
 import type { PortableTextComponents } from "@portabletext/react"
 import Image from "next/image"
@@ -334,6 +335,25 @@ if (applyDropCap) {
 </figure>
       )
     },
+    amazonProduct: ({ value }: any) => {
+  const product = value?.productData
+
+  if (!product) {
+    return null
+  }
+
+  return (
+    <div className="my-14">
+      <ProductCard
+        title={product.title}
+        image={product.image || undefined}
+        link={product.amazonUrl}
+        recommendation={value.recommendation}
+        category={value.label || "Velvet Nest Pick"}
+      />
+    </div>
+  )
+},
     table: ({ value }: any) => {
   return <Table value={value} />
 },
