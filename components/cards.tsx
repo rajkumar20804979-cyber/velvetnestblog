@@ -363,6 +363,7 @@ interface ProductCardProps {
   image?: string
   link?: string
   category?: string
+  recommendation?: string
 }
 
 export function ProductCard({
@@ -372,6 +373,7 @@ export function ProductCard({
   image,
   link,
   category,
+  recommendation,
 }: ProductCardProps) {
 
   const imageSrc =
@@ -561,6 +563,18 @@ export function ProductCard({
           >
             {title}
           </h3>
+          {recommendation && (
+  <p
+    className="
+      mt-3
+      text-[0.9rem]
+      leading-6
+      text-[#685d55]
+    "
+  >
+    {recommendation}
+  </p>
+)}
 
           <div
             className="
