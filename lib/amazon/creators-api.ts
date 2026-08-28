@@ -233,9 +233,7 @@ export function normalizeAmazonProduct(
       item.images?.primary?.small?.url ||
       null,
 
-    amazonUrl:
-      item.detailPageURL ||
-      `https://${AMAZON_MARKETPLACE}/dp/${item.asin}?tag=${AMAZON_PARTNER_TAG}`,
+ amazonUrl: item.detailPageURL || null,
 
     features:
       item.itemInfo?.features?.displayValues || [],
