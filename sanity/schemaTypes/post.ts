@@ -241,10 +241,16 @@ defineField({
         },
 
         // CALLOUT
-        {
-          type: "callout",
-        },
-        {
+{
+  type: "callout",
+},
+
+// AMAZON PRODUCT
+{
+  type: "amazonProduct",
+},
+
+{
   type: "messageBox",
 },
       ],
