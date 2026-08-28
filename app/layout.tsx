@@ -1,4 +1,3 @@
-import { PageTransition } from "@/components/page-transition"
 import GoogleAnalytics from "@/components/GoogleAnalytics"
 import Clarity from "@/components/Clarity"
 import type { Metadata, Viewport } from "next"
@@ -272,12 +271,7 @@ export default function RootLayout({
         
 
         {/* PAGE TRANSITION */}
-
-        <PageTransition>
-
           {children}
-
-        </PageTransition>
 
         {/* VERCEL ANALYTICS */}
 
