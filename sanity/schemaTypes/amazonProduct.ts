@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity"
 
-export const amazonProduct = defineType({
+export default defineType({
   name: "amazonProduct",
   title: "Amazon Product",
   type: "object",
