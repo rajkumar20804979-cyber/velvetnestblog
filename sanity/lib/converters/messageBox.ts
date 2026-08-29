@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto"
+import { randomKey } from "@sanity/block-tools"
 
 export function convertMessageBox(data: {
   title?: string
@@ -15,7 +15,7 @@ export function convertMessageBox(data: {
     content: [
       {
         _type: "block",
-        _key: randomUUID(),
+        _key: randomKey(12),
 
         style: "normal",
         markDefs: [],
@@ -23,7 +23,7 @@ export function convertMessageBox(data: {
         children: [
           {
             _type: "span",
-            _key: randomUUID(),
+            _key: randomKey(12),
 
             text: data.text || "",
             marks: [],
