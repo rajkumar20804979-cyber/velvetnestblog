@@ -1,4 +1,6 @@
-import { randomKey } from "@sanity/block-tools"
+function randomKey() {
+  return Math.random().toString(36).substring(2, 14)
+}
 
 export function convertMessageBox(data: {
   title?: string
@@ -15,7 +17,7 @@ export function convertMessageBox(data: {
     content: [
       {
         _type: "block",
-        _key: randomKey(12),
+        _key: randomKey(),
 
         style: "normal",
         markDefs: [],
@@ -23,7 +25,7 @@ export function convertMessageBox(data: {
         children: [
           {
             _type: "span",
-            _key: randomKey(12),
+            _key: randomKey(),
 
             text: data.text || "",
             marks: [],
