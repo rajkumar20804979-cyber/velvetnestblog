@@ -7,9 +7,6 @@ import {
 import readingTime from "reading-time"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-
-import { NewsletterPopup } from "@/components/newsletter-popup"
-
 import { Reveal } from "@/components/reveal"
 
 import { Button } from "@/components/ui/button"
@@ -1240,7 +1237,6 @@ gap-4
 </section>
 
       <Footer />
-      <NewsletterPopup />
 
     </div>
   )
