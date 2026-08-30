@@ -536,14 +536,14 @@ if (applyDropCap) {
         text-sm
         font-medium
         text-white
-        no-underline
+        !no-underline
         shadow-[0_6px_20px_rgba(0,0,0,0.12)]
         transition-all
         duration-300
         hover:bg-black
         hover:-translate-y-0.5
         hover:shadow-[0_10px_28px_rgba(0,0,0,0.16)]
-        hover:no-underline
+        hover:!no-underline
       "
     >
       <span>{value.buttonText}</span>
