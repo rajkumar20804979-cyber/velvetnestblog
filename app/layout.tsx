@@ -8,6 +8,7 @@ import {
 } from "next/font/google"
 
 import { Analytics } from "@vercel/analytics/react"
+import { NewsletterPopup } from "@/components/newsletter-popup"
 
 import "./globals.css"
 
@@ -272,6 +273,7 @@ export default function RootLayout({
 
         {/* PAGE TRANSITION */}
           {children}
+        <NewsletterPopup />
 
         {/* VERCEL ANALYTICS */}
 
