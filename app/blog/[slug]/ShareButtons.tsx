@@ -11,6 +11,8 @@ import {
   FaWhatsapp,
   FaTelegramPlane,
 } from "react-icons/fa"
+
+import { FaXTwitter } from "react-icons/fa6"
 import { useEffect, useState } from "react"
 
 interface ShareButtonsProps {
@@ -40,6 +42,8 @@ useEffect(() => {
 
   const shareLinks = [
   {
+  const shareLinks = [
+  {
     name: "Pinterest",
     icon: <FaPinterestP size={18} />,
     color: "#E60023",
@@ -67,7 +71,12 @@ useEffect(() => {
     href: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
   },
 
-  
+  {
+    name: "X",
+    icon: <FaXTwitter size={18} />,
+    color: "#000000",
+    href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+  },
 ]
 
   async function handleCopy() {
