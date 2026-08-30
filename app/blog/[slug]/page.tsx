@@ -333,28 +333,32 @@ const portableTextComponents = {
         {value?.buttonText && value?.buttonLink && (
   <div className="mt-6">
     <a
-      href={value.buttonLink}
-      target="_blank"
-      rel="noopener noreferrer sponsored"
-      className="
-        inline-flex
-        items-center
-        justify-center
-        rounded-full
-        bg-stone-900
-        px-6
-        py-3
-        text-sm
-        font-medium
-        text-white
-        transition-all
-        duration-300
-        hover:opacity-90
-        hover:scale-[1.02]
-      "
-    >
-      {value.buttonText}
-    </a>
+  href={value.buttonLink}
+  target="_blank"
+  rel="noopener noreferrer sponsored"
+  className="
+    inline-flex
+    items-center
+    justify-center
+    rounded-full
+    bg-stone-900
+    px-7
+    py-3.5
+    text-sm
+    font-medium
+    text-white
+    no-underline
+    shadow-sm
+    transition-all
+    duration-300
+    hover:bg-black
+    hover:-translate-y-0.5
+    hover:shadow-md
+  "
+>
+  {value.buttonText}
+  <span className="ml-2 text-base">→</span>
+</a>
   </div>
 )}
 
@@ -736,9 +740,7 @@ const stats = readingTime(plainText)
                       post.publishedAt
                     ).toLocaleDateString()}
                   </div>
-                  <div>
-  <ShareButtons title={post.title} />
-</div>
+                  
 
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4" />
@@ -759,28 +761,33 @@ const stats = readingTime(plainText)
 
         {post.mainImage?.asset?.url && (
           <section className="py-8 md:py-12">
-            <div className="mx-auto max-w-7xl px-6 md:px-10">
-              <div
-                className="
-                  relative
-                  overflow-hidden
-                  rounded-[2.5rem]
-                  aspect-[16/9]
-                "
-              >
-                <Image
-                  src={post.mainImage.asset.url}
-                  alt={
-                    post.mainImage.alt ||
-                    post.title
-                  }
-                  fill
-                  priority
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          </section>
+  <div className="mx-auto max-w-7xl px-6 md:px-10">
+    <div
+      className="
+        relative
+        overflow-hidden
+        rounded-[2.5rem]
+        aspect-[16/9]
+      "
+    >
+      <Image
+        src={post.mainImage.asset.url}
+        alt={
+          post.mainImage.alt ||
+          post.title
+        }
+        fill
+        priority
+        className="object-cover"
+      />
+    </div>
+
+    {/* SHARE BUTTONS */}
+    <div className="mt-6 flex justify-center md:justify-start">
+      <ShareButtons title={post.title} />
+    </div>
+  </div>
+</section>
         )}
 
         <section className="pb-24 pt-8">
