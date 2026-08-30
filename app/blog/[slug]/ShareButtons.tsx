@@ -42,8 +42,6 @@ useEffect(() => {
 
   const shareLinks = [
   {
-  const shareLinks = [
-  {
     name: "Pinterest",
     icon: <FaPinterestP size={18} />,
     color: "#E60023",
