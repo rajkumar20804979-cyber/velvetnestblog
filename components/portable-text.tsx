@@ -518,29 +518,46 @@ if (applyDropCap) {
             {value.text}
           </p>
           {value?.buttonText && value?.buttonLink && (
-  <div className="mt-6">
+  <div className="mt-7">
     <a
       href={value.buttonLink}
       target="_blank"
       rel="noopener noreferrer sponsored"
       className="
+        group
         inline-flex
         items-center
         justify-center
+        gap-2
         rounded-full
         bg-stone-900
-        px-6
-        py-3
+        px-7
+        py-3.5
         text-sm
         font-medium
         text-white
+        no-underline
+        shadow-[0_6px_20px_rgba(0,0,0,0.12)]
         transition-all
         duration-300
-        hover:opacity-90
-        hover:scale-[1.02]
+        hover:bg-black
+        hover:-translate-y-0.5
+        hover:shadow-[0_10px_28px_rgba(0,0,0,0.16)]
+        hover:no-underline
       "
     >
-      {value.buttonText}
+      <span>{value.buttonText}</span>
+
+      <span
+        className="
+          text-base
+          transition-transform
+          duration-300
+          group-hover:translate-x-1
+        "
+      >
+        →
+      </span>
     </a>
   </div>
 )}
