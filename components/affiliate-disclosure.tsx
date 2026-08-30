@@ -5,13 +5,13 @@ export function AffiliateDisclosure() {
     <div className="mb-14">
       <p
         className="
-          text-[1rem]
-          leading-[2]
-          italic
-          text-[#5d5148]
-          md:text-[1.05rem]
-          md:leading-[2]
-        "
+  text-sm
+  leading-7
+  italic
+  text-[#5d5148]
+  md:text-sm
+  md:leading-7
+"
       >
         Some of the links in this post are affiliate links, including from
         Amazon and other trusted partners. If you click on the link and
