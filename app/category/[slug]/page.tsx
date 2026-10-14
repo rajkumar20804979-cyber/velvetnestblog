@@ -1,50 +1,62 @@
 import type { Metadata } from "next"
-
 import Image from "next/image"
 import Link from "next/link"
-
-import {
-  notFound,
-} from "next/navigation"
+import { notFound } from "next/navigation"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-
 import { BlogCard } from "@/components/cards"
 
 import { client } from "@/sanity/lib/client"
-
-import {
-  categoryPostsQuery,
-  categoryCountQuery,
-} from "@/lib/queries"
+import { categoryPostsQuery, categoryCountQuery } from "@/lib/queries"
 
 /* =========================================================
-   CATEGORIES
+   CATEGORY CONFIGURATION
 ========================================================= */
 
 const categories = [
   "fashion",
-  "beauty",
-  "home-decor",
   "outfit-ideas",
+  "home-decor",
+  "beauty",
   "self-care",
 ]
-const categoryDescriptions = {
-  fashion:
-    "Timeless style inspiration and fashion trends.",
 
-  beauty:
-    "Skincare, makeup and beauty inspiration.",
-
-  "home-decor":
-    "Elegant ideas to create a beautiful home.",
-
-  "outfit-ideas":
-    "Stylish looks for every occasion.",
-
-  "self-care":
-    "Simple habits for a better lifestyle.",
+const categoryMeta: Record<
+  string,
+  { title: string; subtitle: string; manifesto: string }
+> = {
+  fashion: {
+    title: "Fashion",
+    subtitle: "Timeless Style & Wardrobe Essentials",
+    manifesto:
+      "Effortless capsule wardrobes, seasonal trend edits, and elevated everyday pieces designed to outlast fleeting fads.",
+  },
+  "outfit-ideas": {
+    title: "Outfit Ideas",
+    subtitle: "Curated Lookbooks for Every Occasion",
+    manifesto:
+      "From relaxed weekend uniform formulas to polished workwear and seasonal styling guides you can recreate with pieces you own.",
+  },
+  "home-decor": {
+    title: "Home Decor",
+    subtitle: "Warm Minimalist Interiors & Cozy Spaces",
+    manifesto:
+      "Thoughtful room makeovers, small-space styling tips, and tactile neutral decor to turn every corner of your home into a sanctuary.",
+  },
+  beauty: {
+    title: "Beauty",
+    subtitle: "Skincare Rituals & Everyday Glow",
+    manifesto:
+      "Tested skincare routines, minimalist makeup favorites, and gentle beauty rituals that prioritize healthy, radiant skin.",
+  },
+  "self-care": {
+    title: "Self Care",
+    subtitle: "Slow Living & Intentional Daily Habits",
+    manifesto:
+      "Mindful morning routines, restorative evening rituals, and grounded wellness practices for a calmer, more intentional life.",
+  },
 }
 
 /* =========================================================
@@ -60,454 +72,243 @@ type Props = {
   }>
 }
 
+function formatShortDate(dateString?: string) {
+  if (!dateString) return "Recently Published"
+  return new Date(dateString).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })
+}
+
 /* =========================================================
    METADATA
 ========================================================= */
 
-export async function generateMetadata({
-  params,
-}: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const info = categoryMeta[slug]
 
-  const { slug } =
-    await params
-
-  const title =
-    slug
-      .replace(/-/g, " ")
-      .replace(
-        /\b\w/g,
-        (char) =>
-          char.toUpperCase()
-      )
+  if (!info) {
+    return { title: "Category Not Found" }
+  }
 
   return {
-    title:
-      `${title} | VelvetNest`,
-
-    description:
-      `Explore curated ${title} inspiration, timeless ideas, and elevated lifestyle content from VelvetNest.`,
+    title: `${info.title} — ${info.subtitle}`,
+    description: info.manifesto,
+    alternates: {
+      canonical: `https://www.thevelvetnest.site/category/${slug}`,
+    },
   }
 }
 
 /* =========================================================
-   PAGE
+   CATEGORY PAGE
 ========================================================= */
 
-export default async function CategoryPage({
-  params,
-  searchParams,
-}: Props) {
+export default async function CategoryPage({ params, searchParams }: Props) {
+  const { slug } = await params
+  const { page = "1" } = await searchParams
 
-  const { slug } =
-    await params
-  const { page = "1" } =
-  await searchParams
-
-const currentPage =
-  Number(page)
-
-const POSTS_PER_PAGE = 10
-
-const start =
-  (currentPage - 1) *
-  POSTS_PER_PAGE
-
-  if (
-    !categories.includes(slug)
-  ) {
+  if (!categories.includes(slug)) {
     notFound()
   }
 
-  const posts =
-  await client.fetch(
-    categoryPostsQuery,
-    {
+  const currentPage = Math.max(1, Number(page) || 1)
+  const POSTS_PER_PAGE = 9
+  const start = (currentPage - 1) * POSTS_PER_PAGE
+
+  const [posts, totalPosts] = await Promise.all([
+    client.fetch(categoryPostsQuery, {
       slug,
       start,
-      end:
-        start +
-        POSTS_PER_PAGE,
-    }
-  )
-  const totalPosts =
-  await client.fetch(
-    categoryCountQuery,
-    { slug }
-  )
+      end: start + POSTS_PER_PAGE,
+    }),
+    client.fetch(categoryCountQuery, { slug }),
+  ])
 
-const totalPages =
-  Math.ceil(
-    totalPosts /
-    POSTS_PER_PAGE
-  )
-
-  const categoryTitle =
-    slug
-      .replace(/-/g, " ")
-      .replace(
-        /\b\w/g,
-        (char) =>
-          char.toUpperCase()
-      )
+  const totalPages = Math.ceil((totalPosts || 0) / POSTS_PER_PAGE)
+  const info = categoryMeta[slug]
 
   return (
-
-    <div className="min-h-screen bg-background">
-
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
-      <main>
-
+      <main className="flex-1">
         {/* =========================================================
-            HERO
+            1. EDITORIAL CATEGORY HERO
         ========================================================= */}
-
-        <section
-          className="
-            relative
-            overflow-hidden
-            border-b
-            border-border
-          "
-        >
-
-          {/* BACKGROUND */}
-
+        <section className="relative overflow-hidden border-b border-border bg-[#1c1917]">
           <div className="absolute inset-0">
-
             <Image
               src={`/categories/${slug}.jpg`}
-              alt={categoryTitle}
+              alt={info.title}
               fill
               priority
+              sizes="100vw"
               className="object-cover"
             />
-
-            <div
-              className="
-                absolute
-                inset-0
-                bg-black/35
-              "
-            />
-
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/30" />
           </div>
 
-          {/* CONTENT */}
+          <div className="relative z-10 mx-auto max-w-4xl px-5 py-24 md:py-32 text-center text-white">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[#e2c48e]">
+              {info.subtitle}
+            </p>
 
-          <div
-            className="
-              relative
-              z-10
-              px-5
-              py-32
-              md:py-40
-            "
-          >
+            <h1 className="mt-3 font-serif text-4xl sm:text-5xl md:text-6xl font-medium leading-[1.1] tracking-[-0.02em]">
+              {info.title}
+            </h1>
 
-            <div
-              className="
-                mx-auto
-                max-w-4xl
-                text-center
-                text-white
-              "
-            >
-
-              <p
-                className="
-                  text-[11px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/80
-                "
-              >
-                VelvetNest Category
-              </p>
-
-              <h1
-                className="
-                  mt-5
-                  font-serif
-                  text-[4rem]
-                  leading-[0.92]
-                  tracking-[-0.06em]
-                  md:text-[6rem]
-                  lg:text-[7rem]
-                "
-              >
-                {categoryTitle}
-              </h1>
-
-              <p
-                className="
-                  mx-auto
-                  mt-8
-                  max-w-2xl
-                  text-[1.1rem]
-                  leading-[2]
-                  text-white/90
-                "
-              >
-                Explore curated inspiration,
-                timeless trends,
-                and elevated lifestyle ideas from VelvetNest.
-              </p>
-
-            </div>
-
+            <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-white/85">
+              {info.manifesto}
+            </p>
           </div>
-
         </section>
 
         {/* =========================================================
-            POSTS
+            2. TOPIC SWITCHER BAR
         ========================================================= */}
+        <section className="border-b border-border bg-card/80 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-start sm:justify-center gap-2 overflow-x-auto px-5 py-3.5 no-scrollbar">
+            <Link
+              href="/blog"
+              className="shrink-0 rounded-full border border-border bg-background px-4 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground hover:border-accent hover:text-foreground"
+            >
+              All Topics
+            </Link>
 
-        <section
-          className="
-            py-24
-            md:py-32
-          "
-        >
-
-          <div
-            className="
-              mx-auto
-              max-w-7xl
-              px-5
-            "
-          >
-
-            {/* EMPTY */}
-
-            {posts.length === 0 && (
-
-              <div
-                className="
-                  rounded-[2.5rem]
-                  border
-                  border-dashed
-                  border-border
-                  bg-card
-                  px-10
-                  py-24
-                  text-center
-                "
-              >
-
-                <p
-                  className="
-                    text-[11px]
-                    uppercase
-                    tracking-[0.25em]
-                    text-muted-foreground
-                  "
+            {categories.map((catSlug) => {
+              const isActive = catSlug === slug
+              return (
+                <Link
+                  key={catSlug}
+                  href={`/category/${catSlug}`}
+                  className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.16em] transition-colors ${
+                    isActive
+                      ? "bg-foreground text-background"
+                      : "border border-border bg-background text-muted-foreground hover:border-accent hover:text-foreground"
+                  }`}
                 >
-                  Coming Soon
-                </p>
-
-                <h2
-                  className="
-                    mt-5
-                    font-serif
-                    text-[3rem]
-                    tracking-[-0.05em]
-                    text-foreground
-                  "
-                >
-                  No articles yet
-                </h2>
-
-                <p
-                  className="
-                    mx-auto
-                    mt-5
-                    max-w-lg
-                    text-[1.05rem]
-                    leading-8
-                    text-[#6b6057]
-                  "
-                >
-                  Curated articles for this category
-                  will appear here soon.
-                </p>
-
-              </div>
-
-            )}
-
-            {/* POSTS */}
-
-            {posts.length > 0 && (
-
-              <>
-                {/* LABEL */}
-
-                <div
-                  className="
-                    mb-14
-                    flex
-                    items-end
-                    justify-between
-                  "
-                >
-
-                  <div>
-
-                    <p
-                      className="
-                        text-[11px]
-                        uppercase
-                        tracking-[0.35em]
-                        text-muted-foreground
-                      "
-                    >
-                      Curated Articles
-                    </p>
-
-                    <h2
-  className="
-    mt-4
-    font-serif
-    text-[3rem]
-    tracking-[-0.05em]
-    md:text-[5rem]
-  "
->
-  {categoryTitle}
-</h2>
-                    <p
-  className="
-    mt-4
-    max-w-xl
-    text-muted-foreground
-  "
->
-  {
-    categoryDescriptions[
-      slug as keyof typeof categoryDescriptions
-    ]
-  }
-</p>
-
-                  </div>
-
-                  <p
-                    className="
-                      hidden
-                      text-sm
-                      text-muted-foreground
-                      md:block
-                    "
-                  >
-                    {posts.length} Articles
-                  </p>
-
-                </div>
-
-                {/* GRID */}
-
-                <div
-  className="
-    grid
-    gap-12
-    md:grid-cols-2
-  "
->
-
-                  {posts.map(
-                    (post: any) => (
-
-                      <BlogCard
-                        key={post._id}
-                        title={post.title}
-                        excerpt={post.excerpt}
-                        image={
-                          post.mainImage?.asset
-                            ?.url
-                        }
-                        category={
-                          post.category
-                            ?.title
-                        }
-                        date={
-                          post.publishedAt
-                            ? new Date(
-                                post.publishedAt
-                              ).toDateString()
-                            : "Recently Published"
-                        }
-                        slug={
-                          post.slug.current
-                        }
-                        featured={
-                          post.featured
-                        }
-                        readingTime={
-                          post.readingTime
-                        }
-                      />
-
-                    )
-                  )}
-
-                </div>
-                {/* PAGINATION */}
-                {
-  totalPages > 1 && (
-    <div
-      className="
-        mt-20
-        flex
-        justify-center
-        gap-3
-      "
-    >
-      {Array.from(
-        {
-          length:
-            totalPages,
-        },
-        (_, i) => (
-          <Link
-            key={i}
-            href={`/category/${slug}?page=${i + 1}`}
-            className={`
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              border
-
-              ${
-                currentPage ===
-                i + 1
-                  ? "bg-black text-white"
-                  : ""
-              }
-            `}
-          >
-            {i + 1}
-          </Link>
-        )
-      )}
-    </div>
-  )
-                }
-              </>
-
-            )}
-
+                  {categoryMeta[catSlug]?.title || catSlug}
+                </Link>
+              )
+            })}
           </div>
-
         </section>
 
+        {/* =========================================================
+            3. ARTICLES GRID
+        ========================================================= */}
+        <section className="py-16 md:py-24">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+            {(!posts || posts.length === 0) ? (
+              <div className="mx-auto max-w-2xl rounded-3xl border border-dashed border-border bg-card px-8 py-20 text-center">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
+                  Coming Soon
+                </p>
+                <h2 className="mt-3 font-serif text-3xl font-medium text-foreground">
+                  No articles in {info.title} yet
+                </h2>
+                <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+                  We are curating new stories for this section. Browse our other
+                  lifestyle categories in the meantime.
+                </p>
+                <Link
+                  href="/blog"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-background hover:bg-accent hover:text-white"
+                >
+                  <span>Explore All Articles</span>
+                </Link>
+              </div>
+            ) : (
+              <>
+                {/* SECTION HEADER */}
+                <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border pb-6">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-accent">
+                      Curated Collection
+                    </p>
+                    <h2 className="mt-1 font-serif text-3xl sm:text-4xl font-medium text-foreground">
+                      {info.title} Articles
+                    </h2>
+                  </div>
+
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                    Showing {posts.length} of {totalPosts || posts.length}{" "}
+                    {(totalPosts || posts.length) === 1 ? "Story" : "Stories"}
+                  </p>
+                </div>
+
+                {/* 3-COLUMN EDITORIAL GRID */}
+                <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                  {posts.map((post: any) => (
+                    <BlogCard
+                      key={post._id}
+                      title={post.title}
+                      excerpt={post.excerpt}
+                      image={post.mainImage?.asset?.url}
+                      category={post.category?.title || info.title}
+                      date={formatShortDate(post.publishedAt)}
+                      slug={post.slug?.current || post.slug}
+                      featured={post.featured}
+                      readingTime={post.readingTime}
+                    />
+                  ))}
+                </div>
+
+                {/* PAGINATION */}
+                {totalPages > 1 && (
+                  <nav
+                    aria-label="Pagination"
+                    className="mt-16 flex items-center justify-center gap-2 border-t border-border pt-10"
+                  >
+                    {currentPage > 1 && (
+                      <Link
+                        href={`/category/${slug}?page=${currentPage - 1}`}
+                        className="inline-flex h-10 items-center gap-1.5 rounded-full border border-border bg-card px-4 text-xs font-medium text-foreground hover:border-accent"
+                      >
+                        <ArrowLeft className="h-3.5 w-3.5" />
+                        <span>Prev</span>
+                      </Link>
+                    )}
+
+                    {Array.from({ length: totalPages }, (_, i) => {
+                      const pageNum = i + 1
+                      const isActive = currentPage === pageNum
+                      return (
+                        <Link
+                          key={pageNum}
+                          href={`/category/${slug}?page=${pageNum}`}
+                          className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
+                            isActive
+                              ? "bg-foreground text-background"
+                              : "border border-border bg-card text-muted-foreground hover:border-accent hover:text-foreground"
+                          }`}
+                        >
+                          {pageNum}
+                        </Link>
+                      )
+                    })}
+
+                    {currentPage < totalPages && (
+                      <Link
+                        href={`/category/${slug}?page=${currentPage + 1}`}
+                        className="inline-flex h-10 items-center gap-1.5 rounded-full border border-border bg-card px-4 text-xs font-medium text-foreground hover:border-accent"
+                      >
+                        <span>Next</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    )}
+                  </nav>
+                )}
+              </>
+            )}
+          </div>
+        </section>
       </main>
 
       <Footer />
-
     </div>
   )
-    }
+}
