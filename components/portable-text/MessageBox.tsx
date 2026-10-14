@@ -1,66 +1,74 @@
-import { PortableText } from "@portabletext/react"
+import { PortableText, type PortableTextComponents } from "@portabletext/react"
+import {
+  Sparkles,
+  BookOpen,
+  AlertTriangle,
+  CheckCircle2,
+  Info,
+} from "lucide-react"
 
-const styles = {
+const boxVariants = {
   tip: {
-    icon: "💡",
-    border: "border-amber-300",
-    bg: "bg-amber-50",
-    title: "text-amber-900",
+    icon: Sparkles,
+    label: "Stylist Tip",
+    container: "border-accent/35 bg-muted/55",
+    iconColor: "text-accent",
   },
-
   note: {
-    icon: "📝",
-    border: "border-stone-300",
-    bg: "bg-stone-50",
-    title: "text-stone-900",
+    icon: BookOpen,
+    label: "Editor's Note",
+    container: "border-border bg-card",
+    iconColor: "text-muted-foreground",
   },
-
   warning: {
-    icon: "⚠️",
-    border: "border-red-300",
-    bg: "bg-red-50",
-    title: "text-red-900",
+    icon: AlertTriangle,
+    label: "Keep in Mind",
+    container: "border-amber-700/30 bg-amber-950/[0.04]",
+    iconColor: "text-amber-700",
   },
-
   success: {
-    icon: "✅",
-    border: "border-green-300",
-    bg: "bg-green-50",
-    title: "text-green-900",
+    icon: CheckCircle2,
+    label: "Key Takeaway",
+    container: "border-emerald-800/25 bg-emerald-950/[0.04]",
+    iconColor: "text-emerald-800",
   },
-
   info: {
-    icon: "ℹ️",
-    border: "border-blue-300",
-    bg: "bg-blue-50",
-    title: "text-blue-900",
+    icon: Info,
+    label: "Quick Context",
+    container: "border-border bg-muted/40",
+    iconColor: "text-accent",
   },
 }
 
-export default function MessageBox({
-  value,
-}: any) {
-  const style =
-    styles[value.boxType as keyof typeof styles] ||
-    styles.note
+const contentComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => (
+      <p className="mb-3 last:mb-0 text-[15px] sm:text-base leading-relaxed text-foreground/85">
+        {children}
+      </p>
+    ),
+  },
+}
+
+export default function MessageBox({ value }: any) {
+  const variantKey = (value?.boxType as keyof typeof boxVariants) || "note"
+  const variant = boxVariants[variantKey] || boxVariants.note
+  const Icon = variant.icon
 
   return (
-    <div
-      className={`my-10 rounded-2xl border p-6 ${style.border} ${style.bg}`}
+    <aside
+      className={`not-prose my-9 rounded-2xl border p-6 shadow-xs ${variant.container}`}
     >
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-xl">
-          {style.icon}
-        </span>
-
-        <h4
-          className={`font-semibold text-lg ${style.title}`}
-        >
-          {value.title || "Message"}
+      <div className="mb-2.5 flex items-center gap-2.5">
+        <Icon className={`h-4 w-4 shrink-0 ${variant.iconColor}`} />
+        <h4 className="font-serif text-lg font-semibold tracking-tight text-foreground">
+          {value?.title || variant.label}
         </h4>
       </div>
 
-      <PortableText value={value.content} />
-    </div>
+      <div className="pl-6.5">
+        <PortableText value={value?.content} components={contentComponents} />
+      </div>
+    </aside>
   )
 }
