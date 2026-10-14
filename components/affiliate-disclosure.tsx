@@ -2,33 +2,18 @@ import Link from "next/link"
 
 export function AffiliateDisclosure() {
   return (
-    <div className="mb-14">
-      <p
-        className="
-  text-sm
-  leading-7
-  italic
-  text-[#5d5148]
-  md:text-sm
-  md:leading-7
-"
-      >
-        Some of the links in this post are affiliate links, including from
-        Amazon and other trusted partners. If you click on the link and
-        purchase the item, I may receive a small commission at no extra cost
-        to you. You can learn more{" "}
+    <div className="mb-8 rounded-xl border border-border/80 bg-muted/35 px-4 py-3">
+      <p className="m-0 text-xs leading-relaxed text-muted-foreground">
+        <span className="font-semibold uppercase tracking-wider text-foreground">
+          Disclosure:
+        </span>{" "}
+        VelvetNest is reader-supported. When you shop through links on our site,
+        we may earn a small affiliate commission at no extra cost to you.{" "}
         <Link
           href="/affiliate-disclosure"
-          className="
-            font-medium
-            text-[#9d7b5f]
-            underline
-            underline-offset-[5px]
-            transition
-            hover:opacity-70
-          "
+          className="font-medium text-accent underline underline-offset-4 hover:text-foreground"
         >
-          here
+          Learn more
         </Link>
         .
       </p>
