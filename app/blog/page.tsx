@@ -1,15 +1,10 @@
-           import type { Metadata } from "next"
-
+import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
-
-import {
-  ArrowRight,
-} from "lucide-react"
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react"
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-
 import { BlogCard } from "@/components/cards"
 
 import { client } from "@/sanity/lib/client"
@@ -20,54 +15,78 @@ import { urlFor } from "@/sanity/lib/image"
 ========================================================= */
 
 export const metadata: Metadata = {
-  title:
-    "Blog | VelvetNest",
-
+  title: "The Journal — Fashion, Home Decor & Lifestyle",
   description:
-    "Explore fashion inspiration, elevated interiors, beauty favorites, and lifestyle ideas curated for beautiful living.",
+    "Explore effortless fashion inspiration, warm minimalist interiors, beauty favorites, and intentional living guides curated by VelvetNest.",
+  alternates: {
+    canonical: "https://www.thevelvetnest.site/blog",
+  },
 }
 
 /* =========================================================
-   FETCH POSTS
+   CATEGORY FILTER PILLS
 ========================================================= */
 
-async function getPosts(
-  category?: string
-) {
-
-  const query = category
-
-    ? `*[
-  _type == "post" &&
-  category->slug.current == $category
+const filterCategories = [
+  { slug: "", label: "All Stories", href: "/blog" },
+  { slug: "fashion", label: "Fashion", href: "/blog?category=fashion" },
+  {
+    slug: "outfit-ideas",
+    label: "Outfit Ideas",
+    href: "/blog?category=outfit-ideas",
+  },
+  {
+    slug: "home-decor",
+    label: "Home Decor",
+    href: "/blog?category=home-decor",
+  },
+  { slug: "beauty", label: "Beauty", href: "/blog?category=beauty" },
+  { slug: "self-care", label: "Self Care", href: "/blog?category=self-care" },
 ]
-      | order(_createdAt desc){
+
+/* =========================================================
+   DATA FETCHING
+========================================================= */
+
+async function getPosts(category?: string) {
+  const query = category
+    ? `*[
+        _type == "post" &&
+        category->slug.current == $category
+      ] | order(publishedAt desc, _createdAt desc){
         _id,
         title,
         excerpt,
         publishedAt,
-readingTime,
-"slug": slug.current,
-mainImage,
-"category": category->title
+        readingTime,
+        featured,
+        "slug": slug.current,
+        mainImage,
+        "category": category->title
       }`
-
     : `*[_type == "post"]
-      | order(_createdAt desc){
+      | order(publishedAt desc, _createdAt desc){
         _id,
         title,
         excerpt,
         publishedAt,
-readingTime,
-"slug": slug.current,
-mainImage,
-"category": category->title
+        readingTime,
+        featured,
+        "slug": slug.current,
+        mainImage,
+        "category": category->title
       }`
 
-  return await client.fetch(
-    query,
-    { category }
-  )
+  return await client.fetch(query, { category })
+}
+
+function formatShortDate(dateString?: string) {
+  if (!dateString) return "Recently Published"
+  return new Date(dateString).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })
 }
 
 /* =========================================================
@@ -81,821 +100,353 @@ interface BlogPageProps {
 }
 
 /* =========================================================
-   PAGE
+   BLOG ARCHIVE PAGE
 ========================================================= */
 
-export default async function BlogPage({
-  searchParams,
-}: BlogPageProps) {
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const { category } = await searchParams
 
-  const {
-    category,
-  } = await searchParams
+  const [posts, storefrontCTA, about] = await Promise.all([
+    getPosts(category),
+    client.fetch(`
+      *[_type == "storefrontCTA"][0]{
+        title,
+        description,
+        buttonText,
+        buttonLink,
+        image
+      }
+    `),
+    client.fetch(`
+      *[_type == "aboutPage"][0]{
+        title,
+        subtitle,
+        description,
+        image
+      }
+    `),
+  ])
 
-  const posts =
-    await getPosts(category)
-const storefrontCTA =
-  await client.fetch(`
-    *[_type == "storefrontCTA"][0]{
-      title,
-      description,
-      buttonText,
-      buttonLink,
-      image
-    }
-  `)
- const about =
-  await client.fetch(`
-    *[_type == "aboutPage"][0]{
-      title,
-      subtitle,
-      description,
-      image
-    }
-  `)
+  const featuredPost = posts?.[0]
+  const remainingPosts = posts?.slice(1) || []
 
-  const featuredPost =
-    posts[0]
-
-  const remainingPosts =
-    posts.slice(1)
+  const activeCategoryObj = filterCategories.find(
+    (item) => item.slug === (category || "")
+  )
 
   return (
-
-    <div className="min-h-screen bg-background">
-
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
-      <main>
-
+      <main className="flex-1">
         {/* =========================================================
-            HERO
+            1. EDITORIAL JOURNAL HEADER
         ========================================================= */}
+        <section className="border-b border-border bg-muted/25 py-16 md:py-24">
+          <div className="mx-auto max-w-4xl px-5 text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-accent">
+              The VelvetNest Journal
+            </p>
 
-        <section
-          className="
-            border-b
-            border-border
-            py-24
-            md:py-36
-          "
-        >
+            <h1 className="mt-3 font-serif text-4xl sm:text-5xl md:text-6xl font-medium leading-[1.12] tracking-[-0.02em] text-foreground">
+              {activeCategoryObj && activeCategoryObj.slug
+                ? `${activeCategoryObj.label} Edit`
+                : "Stories & Inspiration"}
+            </h1>
 
-          <div
-            className="
-              mx-auto
-              max-w-5xl
-              px-5
-              text-center
-            "
-          >
-
-            <p
-  className="
-    text-[11px]
-    uppercase
-    tracking-[0.35em]
-    text-muted-foreground
-  "
->
-  The VelvetNest Journal
-</p>
-
-<h1
-  className="
-    mt-5
-    font-serif
-    text-[4rem]
-    leading-[0.92]
-    tracking-[-0.06em]
-    md:text-[6rem]
-    lg:text-[7rem]
-  "
->
-  Stories & Inspiration
-</h1>
-
-<p
-  className="
-    mx-auto
-    mt-8
-    max-w-3xl
-    text-[1.15rem]
-    leading-9
-    text-[#6b6057]
-  "
->
-  Fashion inspiration, beautiful homes,
-  self-care rituals and intentional living—
-  thoughtfully curated for modern women.
-</p>
-
-<div
-  className="
-    mt-12
-    flex
-    flex-wrap
-    justify-center
-    gap-4
-  "
->
-
-  <Link
-    href="/category/fashion"
-    className="
-      border
-      px-6
-      py-3
-      text-xs
-      uppercase
-      tracking-[0.2em]
-    "
-  >
-    Fashion
-  </Link>
-
-  <Link
-    href="/category/home-decor"
-    className="
-      border
-      px-6
-      py-3
-      text-xs
-      uppercase
-      tracking-[0.2em]
-    "
-  >
-    Home Decor
-  </Link>
-
-  <Link
-    href="/category/beauty"
-    className="
-      border
-      px-6
-      py-3
-      text-xs
-      uppercase
-      tracking-[0.2em]
-    "
-  >
-    Beauty
-  </Link>
-</div>
-</div>
-
+            <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-muted-foreground">
+              Effortless personal style, warm minimalist interiors, beauty
+              rituals, and intentional everyday living—thoughtfully curated for
+              modern living.
+            </p>
+          </div>
         </section>
 
-        
-
-        <section
-          className="
-            border-b
-            border-border
-            py-6
-          "
-        >
-
-          <div
-            className="
-              mx-auto
-              flex
-              max-w-7xl
-              flex-wrap
-              items-center
-              justify-center
-              gap-6
-              px-5
-            "
-          >
-
-            {[
-              {
-                href: "/blog",
-                label: "All Posts",
-              },
-
-              {
-                href: "/blog?category=fashion",
-                label: "Fashion",
-              },
-
-              {
-                href: "/blog?category=beauty",
-                label: "Beauty",
-              },
-
-              {
-                href: "/blog?category=home-decor",
-                label: "Home Decor",
-              },
-
-              {
-                href: "/blog?category=outfit-ideas",
-                label: "Outfit Ideas",
-              },
-
-              {
-                href: "/blog?category=self-care",
-                label: "Self Care",
-              },
-            ].map((item) => {
-
-              const isActive =
-                item.href === "/blog"
-                  ? !category
-                  : item.href.includes(
-                      category || ""
-                    )
+        {/* =========================================================
+            2. STICKY CATEGORY FILTER BAR
+        ========================================================= */}
+        <section className="sticky top-16 md:top-[72px] z-30 border-b border-border bg-background/90 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-start sm:justify-center gap-2 overflow-x-auto px-5 py-3.5 no-scrollbar">
+            {filterCategories.map((item) => {
+              const isActive = (category || "") === item.slug
 
               return (
-
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`
-                    text-xs
-                    uppercase
-                    tracking-[0.22em]
-                    transition
-                    ${
-                      isActive
-                        ? "bg-[#d6b06f] text-black px-5 py-2 rounded-full"
-                        : "text-muted-foreground hover:text-foreground"
-                    }
-                  `}
+                  className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.16em] transition-colors ${
+                    isActive
+                      ? "bg-foreground text-background"
+                      : "border border-border bg-card text-muted-foreground hover:border-accent hover:text-foreground"
+                  }`}
                 >
-
                   {item.label}
-
                 </Link>
-
               )
             })}
-
           </div>
-
         </section>
 
         {/* =========================================================
-            FEATURED ARTICLE
+            3. EMPTY STATE (If a filtered category has 0 posts)
         ========================================================= */}
+        {(!posts || posts.length === 0) && (
+          <section className="mx-auto max-w-3xl px-5 py-20 text-center">
+            <div className="rounded-3xl border border-dashed border-border bg-card p-12">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">
+                Coming Soon
+              </p>
+              <h2 className="mt-3 font-serif text-3xl font-medium text-foreground">
+                No articles in this collection yet
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+                We are currently preparing new stories for this topic. In the
+                meantime, explore our full journal archive.
+              </p>
+              <Link
+                href="/blog"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-background hover:bg-accent hover:text-white"
+              >
+                <span>View All Articles</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </section>
+        )}
 
+        {/* =========================================================
+            4. LEAD FEATURED STORY
+        ========================================================= */}
         {featuredPost && (
-
-          <section
-            className="
-              mx-auto
-              max-w-7xl
-              px-5
-              pt-24
-              pb-32
-            "
-          >
-
-            <p
-              className="
-                text-[11px]
-                uppercase
-                tracking-[0.35em]
-                text-muted-foreground
-              "
-            >
-              Editor's Pick
-            </p>
+          <section className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-20">
+            <div className="mb-6 flex items-center justify-between">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-accent">
+                Featured Story
+              </p>
+              <span className="text-xs text-muted-foreground">
+                {posts.length} {posts.length === 1 ? "Article" : "Articles"}
+              </span>
+            </div>
 
             <Link
               href={`/blog/${featuredPost.slug}`}
-              className="
-                group
-                mt-10
-                block
-              "
+              className="group grid overflow-hidden rounded-3xl border border-border bg-card shadow-xs lg:grid-cols-12"
             >
+              {/* IMAGE */}
+              <div className="relative aspect-[16/10] lg:aspect-auto lg:col-span-7 overflow-hidden bg-muted">
+                <Image
+                  src={
+                    featuredPost.mainImage
+                      ? urlFor(featuredPost.mainImage).width(1400).url()
+                      : "/about-image.webp"
+                  }
+                  alt={featuredPost.title}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                />
 
-              <div
-                className="
-                  grid
-                  gap-14
-                  lg:grid-cols-[1.2fr_0.8fr]
-                  lg:gap-20
-                "
-              >
-
-                {/* IMAGE */}
-
-                <div
-                  className="
-                    relative
-                    aspect-[5/4]
-                    overflow-hidden
-                    rounded-[2.8rem]
-                  "
-                >
-
-                  <Image
-                    src={
-                      featuredPost.mainImage
-                        ? urlFor(
-                            featuredPost.mainImage
-                          )
-                            .width(1600)
-                            .url()
-                        : "/placeholder.jpg"
-                    }
-                    alt={featuredPost.title}
-                    fill
-                    priority
-                    className="
-                      object-cover
-                      transition-transform
-                      duration-700
-                      group-hover:scale-[1.03]
-                    "
-                  />
-
-                  <div
-                    className="
-                      absolute
-                      left-5
-                      top-5
-                    "
-                  >
-
-                    <span
-                      className="
-                        rounded-full
-                        bg-background/85
-                        px-4
-                        py-2
-                        text-[10px]
-                        uppercase
-                        tracking-[0.22em]
-                        text-foreground
-                        backdrop-blur-md
-                      "
-                    >
+                {featuredPost.category && (
+                  <div className="absolute left-4 top-4">
+                    <span className="rounded-full bg-background/95 px-3.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground backdrop-blur-md">
                       {featuredPost.category}
                     </span>
-
                   </div>
-
-                </div>
-
-                {/* CONTENT */}
-
-                <div
-                  className="
-                    flex
-                    flex-col
-                    justify-center
-                  "
-                >
-
-                  <p
-                    className="
-                      text-[11px]
-                      uppercase
-                      tracking-[0.22em]
-                      text-muted-foreground
-                    "
-                  >
-                    {featuredPost.publishedAt
-                      ? new Date(
-                          featuredPost.publishedAt
-                        ).toDateString()
-                      : "Recently Published"}
-                  </p>
-
-                  <h2
-                    className="
-                      mt-5
-                      font-serif
-                      text-[3.2rem]
-                      leading-[0.95]
-                      tracking-[-0.05em]
-                      text-foreground
-                      transition
-                      group-hover:opacity-70
-                      md:text-[4.8rem]
-                    "
-                  >
-                    {featuredPost.title}
-                  </h2>
-
-                  <p
-                    className="
-                      mt-8
-                      max-w-xl
-                      text-[1.08rem]
-                      leading-9
-                      text-[#6b6057]
-                    "
-                  >
-                    {featuredPost.excerpt}
-                  </p>
-
-                  <div className="mt-10">
-
-                    <span
-                      className="
-                        inline-flex
-                        items-center
-                        gap-2
-                        text-[12px]
-                        uppercase
-                        tracking-[0.18em]
-                        transition-all
-                        duration-300
-                        group-hover:gap-3
-                      "
-                    >
-
-                      Read Article
-
-                      <ArrowRight className="h-4 w-4" />
-
-                    </span>
-
-                  </div>
-
-                </div>
-
+                )}
               </div>
 
-            </Link>
-
-          </section>
-
-        )}
-
-
-        {/* =========================================================
-            ALL POSTS
-        ========================================================= */}
-
-        <section
-          className="
-            border-t
-            border-border
-            py-24
-            md:py-32
-          "
-        >
-
-          <div
-            className="
-              mx-auto
-              max-w-7xl
-              px-5
-            "
-          >
-
-            <div
-              className="
-                flex
-                items-end
-                justify-between
-              "
-            >
-
-              <div>
-
-                <p
-                  className="
-                    text-[11px]
-                    uppercase
-                    tracking-[0.35em]
-                    text-muted-foreground
-                  "
-                >
-                  Curated For You
+              {/* CONTENT */}
+              <div className="flex flex-col justify-center p-7 sm:p-10 lg:col-span-5 lg:p-12">
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                  {formatShortDate(featuredPost.publishedAt)}
+                  {featuredPost.readingTime
+                    ? ` • ${featuredPost.readingTime} min read`
+                    : ""}
                 </p>
 
-                         <h2
-  className="
-    mt-6
-    font-serif
-    text-[3rem]
-    tracking-[-0.05em]
-    md:text-[5rem]
-  "
->
-  Latest Stories
-</h2>
+                <h2 className="mt-3 font-serif text-2xl sm:text-3xl md:text-4xl font-medium leading-[1.18] tracking-[-0.015em] text-foreground transition-colors group-hover:text-accent">
+                  {featuredPost.title}
+                </h2>
 
-<div
-  className="
-    mt-8
-    h-px
-    w-24
-    bg-[#d6b06f]
-  "
-/>
+                {featuredPost.excerpt && (
+                  <p className="mt-4 line-clamp-3 text-sm sm:text-base leading-relaxed text-muted-foreground">
+                    {featuredPost.excerpt}
+                  </p>
+                )}
 
+                <div className="mt-7">
+                  <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-foreground group-hover:text-accent">
+                    <span>Read Full Story</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </section>
+        )}
+
+        {/* =========================================================
+            5. REMAINING ARTICLES GRID
+        ========================================================= */}
+        {remainingPosts.length > 0 && (
+          <section className="border-t border-border py-16 md:py-24">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+              <div className="mb-12 flex items-end justify-between">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-accent">
+                    Curated Archive
+                  </p>
+                  <h2 className="mt-2 font-serif text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-foreground">
+                    Latest Stories
+                  </h2>
+                </div>
+
+                {category && (
+                  <Link
+                    href="/blog"
+                    className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                  >
+                    Clear Filter
+                  </Link>
+                )}
               </div>
 
-            </div>
-
-            {/* POSTS GRID */}
-
-            <div
-  className="
-    mt-16
-    grid
-    gap-x-12
-    gap-y-20
-    md:grid-cols-2
-    xl:grid-cols-3
-  "
->
-
-              {remainingPosts.map(
-                (post: any) => (
-
+              <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                {remainingPosts.map((post: any) => (
                   <BlogCard
                     key={post._id}
                     title={post.title}
                     excerpt={post.excerpt}
                     image={
                       post.mainImage
-                        ? urlFor(
-                            post.mainImage
-                          )
-                            .width(1000)
-                            .url()
-                        : "/placeholder.jpg"
+                        ? urlFor(post.mainImage).width(800).url()
+                        : undefined
                     }
-                    category={
-                      post.category
-                    }
-                    date={
-                      post.publishedAt
-                        ? new Date(
-                            post.publishedAt
-                          ).toDateString()
-                        : "No date"
-                    }
+                    category={post.category}
+                    date={formatShortDate(post.publishedAt)}
+                    readingTime={post.readingTime}
                     slug={post.slug}
                   />
-
-                )
-              )}
-
+                ))}
+              </div>
             </div>
-
-            {/* LOAD MORE */}
-
-            <div className="mt-20 text-center">
-
-              <Link
-  href="/blog"
-  className="
-    inline-flex
-    border
-    border-[#2c2623]
-    px-12
-    py-5
-    text-sm
-    uppercase
-    tracking-[0.25em]
-  "
->
-  Browse All Articles →
-</Link>
-
-            </div>
-
-          </div>
-
-        </section>
-                 <section
-  className="
-    border-t
-    border-border
-    py-24
-  "
->
-
-  <div
-    className="
-      mx-auto
-      max-w-6xl
-      px-5
-    "
-  >
-
-    <div
-      className="
-        overflow-hidden
-        rounded-[2rem]
-        bg-[#2a2420]
-        text-white
-      "
-    >
-
-      <div
-        className="
-          grid
-          items-center
-          lg:grid-cols-2
-        "
-      >
-
-        <div
-          className="
-            relative
-            aspect-[4/3]
-          "
-        >
-
-          {storefrontCTA?.image && (
-
-            <Image
-              src={urlFor(storefrontCTA.image).width(1600).url()}
-              alt={storefrontCTA.title}
-              fill
-              className="object-cover"
-            />
-
-          )}
-
-        </div>
-
-        <div className="p-10 md:p-16">
-
-          <p
-            className="
-              text-xs
-              uppercase
-              tracking-[0.4em]
-              text-[#d6b06f]
-            "
-          >
-            SHOP MY FAVORITES
-          </p>
-
-          <h2
-            className="
-              mt-5
-              font-serif
-              text-4xl
-              md:text-6xl
-            "
-          >
-            {storefrontCTA?.title}
-          </h2>
-
-          <p
-            className="
-              mt-6
-              max-w-lg
-              text-white/70
-              leading-relaxed
-            "
-          >
-            {storefrontCTA?.description}
-          </p>
-
-          <a
-            href={storefrontCTA?.buttonLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
-              mt-8
-              inline-flex
-              bg-[#d6b06f]
-              px-8
-              py-4
-              text-sm
-              uppercase
-              tracking-[0.2em]
-              text-black
-            "
-          >
-            {storefrontCTA?.buttonText}
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-                                    
-                   <section
-  className="
-    py-28
-  "
->
-
-  <div
-    className="
-      mx-auto
-      max-w-7xl
-      px-5
-    "
-  >
-
-    <div
-      className="
-        grid
-        gap-16
-        items-center
-        lg:grid-cols-2
-      "
-    >
-
-      <div
-        className="
-          relative
-          aspect-[4/5]
-          overflow-hidden
-          rounded-[2rem]
-        "
-      >
-
-        {about?.image && (
-
-          <Image
-            src={urlFor(about.image).width(1200).url()}
-            alt="About VelvetNest"
-            fill
-            className="object-cover"
-          />
-
+          </section>
         )}
 
-      </div>
+        {/* =========================================================
+            6. STOREFRONT CTA
+        ========================================================= */}
+        {storefrontCTA && (
+          <section className="border-t border-border py-16 md:py-24">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+              <div className="overflow-hidden rounded-3xl bg-[#221d1a] text-white shadow-lg">
+                <div className="grid items-center lg:grid-cols-2">
+                  <div className="relative aspect-[4/3] lg:aspect-auto lg:h-full min-h-[300px] bg-[#2c2623]">
+                    {storefrontCTA?.image && (
+                      <Image
+                        src={urlFor(storefrontCTA.image).width(1200).url()}
+                        alt={storefrontCTA.title || "VelvetNest Storefront"}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
 
-      <div>
+                  <div className="p-8 sm:p-12 md:p-16">
+                    <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#d6b06f]">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>Shop Our Favorites</span>
+                    </div>
 
-        <p
-          className="
-            text-xs
-            uppercase
-            tracking-[0.35em]
-            text-[#d6b06f]
-          "
-        >
-          About VelvetNest
-        </p>
+                    <h2 className="mt-4 font-serif text-3xl sm:text-4xl md:text-5xl font-medium leading-[1.15] text-white">
+                      {storefrontCTA?.title}
+                    </h2>
 
-        <h2
-          className="
-            mt-5
-            font-serif
-            text-5xl
-            md:text-6xl
-          "
-        >
-          {about?.title}
-        </h2>
+                    <p className="mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-white/75">
+                      {storefrontCTA?.description}
+                    </p>
 
-        <p
-          className="
-            mt-8
-            max-w-xl
-            text-lg
-            leading-relaxed
-            text-muted-foreground
-          "
-        >
-          {about?.description}
-        </p>
+                    <div className="mt-8 flex flex-wrap gap-4">
+                      <a
+                        href={
+                          storefrontCTA?.buttonLink || "https://a.co/d/0i54mdf3"
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        className="inline-flex items-center gap-2 rounded-full bg-[#d6b06f] px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#1c1917] hover:bg-[#e3c287]"
+                      >
+                        <span>
+                          {storefrontCTA?.buttonText || "Visit Storefront"}
+                        </span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
 
-        <Link
-          href="/about"
-          className="
-            mt-8
-            inline-flex
-            border
-            border-[#d6b06f]
-            px-8
-            py-4
-            text-sm
-            uppercase
-            tracking-[0.2em]
-          "
-        >
-          Read Our Story
-        </Link>
+                      <Link
+                        href="/amazon-finds"
+                        className="inline-flex items-center gap-2 rounded-full border border-white/30 px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-white hover:bg-white/10"
+                      >
+                        <span>Amazon Finds</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
-      </div>
+        {/* =========================================================
+            7. ABOUT SECTION
+        ========================================================= */}
+        {about && (
+          <section className="border-t border-border py-16 md:py-24">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+              <div className="grid items-center gap-12 lg:grid-cols-12">
+                <div className="lg:col-span-5">
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-muted">
+                    {about?.image && (
+                      <Image
+                        src={urlFor(about.image).width(1000).url()}
+                        alt="About VelvetNest"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 42vw"
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
+                </div>
 
-    </div>
+                <div className="lg:col-span-7 lg:pl-6">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-accent">
+                    About VelvetNest
+                  </p>
 
-  </div>
+                  <h2 className="mt-3 font-serif text-3xl sm:text-4xl md:text-5xl font-medium leading-[1.15] text-foreground">
+                    {about?.title}
+                  </h2>
 
-</section>
+                  <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+                    {about?.description}
+                  </p>
 
+                  <Link
+                    href="/about"
+                    className="mt-8 inline-flex items-center gap-2 rounded-full border border-foreground px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-foreground hover:bg-foreground hover:text-background"
+                  >
+                    <span>Read Our Story</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />
-
     </div>
   )
-} 
+               }
+                                   
