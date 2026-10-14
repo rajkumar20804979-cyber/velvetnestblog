@@ -1,187 +1,103 @@
 "use client"
 
-import {
-  Link as LinkIcon,
-  Check,
-} from "lucide-react"
-
+import { useEffect, useState } from "react"
+import { Link as LinkIcon, Check } from "lucide-react"
 import {
   FaPinterestP,
   FaFacebookF,
   FaWhatsapp,
   FaTelegramPlane,
 } from "react-icons/fa"
-
 import { FaXTwitter } from "react-icons/fa6"
-import { useEffect, useState } from "react"
 
 interface ShareButtonsProps {
   title: string
 }
 
-export default function ShareButtons({
-  title,
-}: ShareButtonsProps) {
+export default function ShareButtons({ title }: ShareButtonsProps) {
+  const [copied, setCopied] = useState(false)
+  const [url, setUrl] = useState("")
 
-  const [copied, setCopied] =
-    useState(false)
+  useEffect(() => {
+    setUrl(window.location.href)
+  }, [])
 
-  
-
-const [url, setUrl] = useState("")
-
-useEffect(() => {
-  setUrl(window.location.href)
-}, [])
-
-  const encodedUrl =
-    encodeURIComponent(url)
-
-  const encodedTitle =
-    encodeURIComponent(title)
+  const encodedUrl = encodeURIComponent(url)
+  const encodedTitle = encodeURIComponent(title)
 
   const shareLinks = [
-  {
-    name: "Pinterest",
-    icon: <FaPinterestP size={18} />,
-    color: "#E60023",
-    href: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedTitle}`,
-  },
-
-  {
-    name: "Facebook",
-    icon: <FaFacebookF size={18} />,
-    color: "#1877F2",
-    href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-  },
-
-  {
-    name: "WhatsApp",
-    icon: <FaWhatsapp size={18} />,
-    color: "#25D366",
-    href: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
-  },
-
-  {
-    name: "Telegram",
-    icon: <FaTelegramPlane size={18} />,
-    color: "#0088cc",
-    href: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
-  },
-
-  {
-    name: "X",
-    icon: <FaXTwitter size={18} />,
-    color: "#000000",
-    href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-  },
-]
+    {
+      name: "Pinterest",
+      icon: <FaPinterestP className="h-3.5 w-3.5" />,
+      href: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedTitle}`,
+    },
+    {
+      name: "WhatsApp",
+      icon: <FaWhatsapp className="h-3.5 w-3.5" />,
+      href: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
+    },
+    {
+      name: "Facebook",
+      icon: <FaFacebookF className="h-3.5 w-3.5" />,
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    },
+    {
+      name: "X",
+      icon: <FaXTwitter className="h-3.5 w-3.5" />,
+      href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+    },
+    {
+      name: "Telegram",
+      icon: <FaTelegramPlane className="h-3.5 w-3.5" />,
+      href: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+    },
+  ]
 
   async function handleCopy() {
-
     try {
-
-      await navigator.clipboard.writeText(
-        url
-      )
-
+      await navigator.clipboard.writeText(url || window.location.href)
       setCopied(true)
-
-      setTimeout(() => {
-        setCopied(false)
-      }, 2000)
-
+      setTimeout(() => setCopied(false), 2000)
     } catch (error) {
-
-      console.error(
-        "Copy failed",
-        error
-      )
+      console.error("Copy failed", error)
     }
   }
 
   return (
-
-    <div className="flex flex-wrap items-center gap-3">
-
-      {shareLinks.map(
-        (item) => (
-
-          <a
-  key={item.name}
-  href={item.href}
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label={`Share on ${item.name}`}
-  className="
-    group
-    flex
-    h-10
-    w-10
-    items-center
-    justify-center
-    rounded-full
-    transition-all
-    duration-300
-    hover:scale-110
-  "
->
-
-            <span
-  style={{
-    color: item.color,
-  }}
->
-  {item.icon}
-</span>
-
-          </a>
-        )
-      )}
+    <div className="flex flex-wrap items-center gap-2">
+      {shareLinks.map((item) => (
+        <a
+          key={item.name}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Share on ${item.name}`}
+          title={`Share on ${item.name}`}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-accent hover:text-foreground"
+        >
+          {item.icon}
+        </a>
+      ))}
 
       <button
+        type="button"
         onClick={handleCopy}
-        aria-label="Copy link"
-        className="
-          group
-          flex
-          h-11
-          w-11
-          items-center
-          justify-center
-          rounded-full
-          border
-          border-[#e4ddd4]
-          bg-white
-          text-[#3d342f]
-          shadow-sm
-          transition-all
-          duration-300
-          hover:-translate-y-1
-          hover:border-[#cdb9a4]
-          hover:bg-[#f8f3ee]
-          hover:shadow-md
-        "
+        aria-label="Copy article link"
+        title="Copy link"
+        className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-accent hover:text-foreground"
       >
-
-        <span
-          className="
-            transition-transform
-            duration-300
-            group-hover:scale-110
-          "
-        >
-
-          {copied ? (
-            <Check size={17} />
-          ) : (
-            <LinkIcon size={17} />
-          )}
-
-        </span>
-
+        {copied ? (
+          <>
+            <Check className="h-3.5 w-3.5 text-emerald-700" />
+            <span className="text-emerald-700">Copied</span>
+          </>
+        ) : (
+          <>
+            <LinkIcon className="h-3.5 w-3.5" />
+            <span>Copy</span>
+          </>
+        )}
       </button>
-
     </div>
   )
 }
