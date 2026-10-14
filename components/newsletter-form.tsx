@@ -1,20 +1,23 @@
 "use client"
 
 import { useState } from "react"
+import { Check, AlertCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+
+const STORAGE_KEY = "velvetnest-popup-seen"
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
   const [message, setMessage] = useState("")
 
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     setLoading(true)
+    setStatus("idle")
     setMessage("")
 
     try {
@@ -23,8 +26,7 @@ export function NewsletterForm() {
         {
           method: "POST",
           headers: {
-            "Content-Type":
-              "application/x-www-form-urlencoded",
+            "Content-Type": "application/x-www-form-urlencoded",
           },
           body: new URLSearchParams({
             email_address: email,
@@ -33,77 +35,68 @@ export function NewsletterForm() {
       )
 
       if (response.ok) {
-        setMessage(
-          "✨ Thanks for subscribing! Check your inbox."
-        )
+        setStatus("success")
+        setMessage("Thanks for subscribing! Please check your inbox.")
         setEmail("")
+        /* Prevent the popup from interrupting users who already subscribed in the footer */
+        try {
+          localStorage.setItem(STORAGE_KEY, Date.now().toString())
+        } catch {
+          /* ignore */
+        }
       } else {
-        setMessage(
-          "Something went wrong. Please try again."
-        )
+        setStatus("error")
+        setMessage("Something went wrong. Please try again.")
       }
     } catch {
-      setMessage(
-        "Something went wrong. Please try again."
-      )
+      setStatus("error")
+      setMessage("Network error. Please try again.")
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
-    <>
+    <div className="mx-auto max-w-lg">
       <form
         onSubmit={handleSubmit}
-        className="
-          mx-auto
-          mt-10
-          flex
-          max-w-xl
-          flex-col
-          gap-4
-          sm:flex-row
-        "
+        className="flex flex-col gap-3 sm:flex-row"
       >
         <Input
           type="email"
           required
+          aria-label="Email address"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-          placeholder="Enter your email"
-          className="
-            h-14
-            rounded-full
-            border-border
-            bg-card
-            px-6
-          "
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email address..."
+          className="h-12 flex-1 rounded-full border-border bg-card px-5 text-sm focus-visible:ring-1 focus-visible:ring-accent"
         />
 
         <Button
           type="submit"
           disabled={loading}
-          className="
-            h-14
-            rounded-full
-            bg-[#2c2623]
-            px-8
-            text-white
-          "
+          className="h-12 rounded-full bg-foreground px-7 text-xs font-semibold uppercase tracking-[0.2em] text-background hover:bg-accent hover:text-white"
         >
-          {loading
-            ? "Joining..."
-            : "Subscribe"}
+          {loading ? "Joining..." : "Subscribe"}
         </Button>
       </form>
 
       {message && (
-        <p className="mt-4 text-sm text-[#6c6058]">
-          {message}
-        </p>
+        <div
+          role="status"
+          aria-live="polite"
+          className={`mt-3 inline-flex items-center justify-center gap-1.5 text-xs font-medium ${
+            status === "success" ? "text-emerald-800" : "text-red-700"
+          }`}
+        >
+          {status === "success" ? (
+            <Check className="h-3.5 w-3.5" />
+          ) : (
+            <AlertCircle className="h-3.5 w-3.5" />
+          )}
+          <span>{message}</span>
+        </div>
       )}
-    </>
+    </div>
   )
-                 }
+}
