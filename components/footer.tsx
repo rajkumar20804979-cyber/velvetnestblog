@@ -1,414 +1,208 @@
 import Link from "next/link"
-import { NewsletterForm }
-from "@/components/newsletter-form"
-import {
-  Mail,
-} from "lucide-react"
-
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Mail, ArrowUpRight } from "lucide-react"
+import { FaPinterestP } from "react-icons/fa"
+import { NewsletterForm } from "@/components/newsletter-form"
 
 /* =========================================================
    FOOTER LINKS
 ========================================================= */
 
 const footerLinks = {
-
-  explore: [
-    {
-      href: "/blog",
-      label: "Blog",
-    },
-
-    {
-      href: "/amazon-finds",
-      label: "Amazon Finds",
-    },
-
-    {
-      href: "/blog?category=fashion",
-      label: "Fashion",
-    },
-
-    {
-      href: "/blog?category=home-decor",
-      label: "Home Decor",
-    },
-
-    {
-      href: "/blog?category=beauty",
-      label: "Beauty",
-    },
+  categories: [
+    { href: "/category/fashion", label: "Fashion" },
+    { href: "/category/outfit-ideas", label: "Outfit Ideas" },
+    { href: "/category/home-decor", label: "Home Decor" },
+    { href: "/category/beauty", label: "Beauty" },
+    { href: "/category/self-care", label: "Self Care" },
   ],
-
+  curated: [
+    { href: "/blog", label: "All Articles", external: false },
+    { href: "/amazon-finds", label: "Curated Amazon Finds", external: false },
+    {
+      href: "https://a.co/d/0i54mdf3",
+      label: "Amazon Storefront",
+      external: true,
+    },
+    { href: "/search", label: "Search Archive", external: false },
+  ],
   company: [
-  {
-    href: "/about",
-    label: "About",
-  },
-
-  {
-    href: "/contact",
-    label: "Contact",
-  },
-
-  {
-    href: "/privacy-policy",
-    label: "Privacy Policy",
-  },
-
-  {
-    href: "/terms",
-    label: "Terms & Conditions",
-  },
-
-  {
-    href: "/affiliate-disclosure",
-    label: "Affiliate Disclosure",
-  },
-],
+    { href: "/about", label: "About VelvetNest" },
+    { href: "/contact", label: "Contact & Collaborations" },
+    { href: "/affiliate-disclosure", label: "Affiliate Disclosure" },
+    { href: "/privacy-policy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms & Conditions" },
+  ],
 }
 
 /* =========================================================
-   FOOTER
+   FOOTER COMPONENT
 ========================================================= */
 
 export function Footer() {
-
   return (
-
-    <footer
-      className="
-        border-t
-        border-border
-        bg-background
-      "
-    >
-
-      {/* NEWSLETTER */}
-
-      <section
-        className="
-          border-b
-          border-border
-          py-24
-        "
-      >
-
-        <div
-          className="
-            mx-auto
-            max-w-3xl
-            px-5
-            text-center
-          "
-        >
-
-          <p
-            className="
-              text-[11px]
-              uppercase
-              tracking-[0.28em]
-              text-muted-foreground
-            "
-          >
-            Join The Community
+    <footer className="mt-auto border-t border-border bg-background">
+      {/* EDITORIAL NEWSLETTER BAND */}
+      <section className="border-b border-border bg-muted/40 py-16 md:py-24">
+        <div className="mx-auto max-w-2xl px-5 text-center">
+          <p className="text-[11px] font-medium uppercase tracking-[0.26em] text-accent">
+            The Velvet Edit
           </p>
 
-          <h2
-            className="
-              mt-5
-              font-serif
-              text-[3rem]
-              leading-[0.95]
-              tracking-[-0.05em]
-              text-foreground
-              md:text-[4.8rem]
-            "
-          >
-            Curated inspiration for beautiful living.
+          <h2 className="mt-3 font-serif text-3xl sm:text-4xl md:text-5xl font-medium leading-[1.15] tracking-[-0.02em] text-foreground">
+            Curated inspiration for slow, beautiful living.
           </h2>
 
-          <p
-            className="
-              mx-auto
-              mt-6
-              max-w-2xl
-              text-[1.1rem]
-              leading-9
-              text-[#6c6058]
-            "
-          >
-            Receive weekly fashion inspiration,
-            cozy home decor ideas, beauty favorites,
-            and elevated lifestyle finds directly in your inbox.
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+            Join readers receiving weekly capsule wardrobe ideas, warm minimalist
+            home finds, and seasonal beauty rituals straight to their inbox.
           </p>
 
-          <NewsletterForm />
+          <div className="mt-8">
+            <NewsletterForm />
+          </div>
 
-          <p
-            className="
-              mt-5
-              text-xs
-              text-muted-foreground
-            "
-          >
-            No spam. Unsubscribe anytime.
-
-            {" "}
-
+          <p className="mt-4 text-xs text-muted-foreground">
+            Thoughtfully sent. Unsubscribe anytime. Read our{" "}
             <Link
               href="/privacy-policy"
-              className="
-                underline
-                underline-offset-4
-              "
+              className="underline underline-offset-4 hover:text-foreground"
             >
               Privacy Policy
             </Link>
-
+            .
           </p>
-
         </div>
-
       </section>
 
-      {/* MAIN FOOTER */}
-
-      <section className="py-20">
-
-        <div
-          className="
-            mx-auto
-            max-w-7xl
-            px-5
-          "
-        >
-
-          <div
-            className="
-              grid
-              gap-16
-              md:grid-cols-[1.3fr_0.7fr_0.7fr]
-            "
-          >
-
-            {/* BRAND */}
-
-            <div>
-
-              <Link
-                href="/"
-                className="inline-block"
-              >
-
-                <h2
-                  className="
-                    font-serif
-                    text-[3rem]
-                    leading-none
-                    tracking-[-0.05em]
-                    text-foreground
-                  "
-                >
+      {/* MAIN DIRECTORY FOOTER */}
+      <section className="py-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-12">
+            {/* BRAND COLUMN (5 cols) */}
+            <div className="lg:col-span-5">
+              <Link href="/" className="inline-block">
+                <span className="font-serif text-3xl md:text-4xl font-semibold tracking-[-0.02em] text-foreground">
                   VelvetNest
-                </h2>
-
+                </span>
               </Link>
 
-              <p
-                className="
-                  mt-6
-                  max-w-md
-                  text-[1rem]
-                  leading-8
-                  text-[#6c6058]
-                "
-              >
-                A cozy destination for curated fashion,
-                elegant interiors, beauty rituals,
-                and intentional living inspiration.
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                An editorial lifestyle destination dedicated to effortless
+                personal style, cozy interiors, beauty rituals, and elevated
+                everyday living.
               </p>
 
-              {/* SOCIALS */}
-
-              <div
-                className="
-                  mt-8
-                  flex
-                  items-center
-                  gap-5
-                "
-              >
-
-                {/* PINTEREST */}
-
+              {/* SOCIAL ICONS */}
+              <div className="mt-6 flex items-center gap-3">
                 <Link
                   href="https://www.pinterest.com/velvetnestworld/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Pinterest"
-                  className="
-                    text-muted-foreground
-                    transition
-                    hover:text-foreground
-                  "
+                  aria-label="VelvetNest on Pinterest"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-accent hover:text-foreground"
                 >
-
-                  <svg
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-
-                    <path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z" />
-
-                  </svg>
-
+                  <FaPinterestP className="h-4 w-4" />
                 </Link>
-
-                {/* EMAIL */}
 
                 <Link
                   href="mailto:hello@thevelvetnest.site"
-                  aria-label="Email"
-                  className="
-                    text-muted-foreground
-                    transition
-                    hover:text-foreground
-                  "
+                  aria-label="Email VelvetNest"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-accent hover:text-foreground"
                 >
-
-                  <Mail className="h-5 w-5" />
-
+                  <Mail className="h-4 w-4" />
                 </Link>
+              </div>
+            </div>
 
+            {/* NAVIGATION COLUMNS (7 cols) */}
+            <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7">
+              {/* CATEGORIES */}
+              <div>
+                <h3 className="font-sans text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground">
+                  Categories
+                </h3>
+                <ul className="mt-4 space-y-3">
+                  {footerLinks.categories.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-            </div>
-
-            {/* EXPLORE */}
-
-            <div>
-
-              <h4
-                className="
-                  text-[11px]
-                  uppercase
-                  tracking-[0.25em]
-                  text-muted-foreground
-                "
-              >
-                Explore
-              </h4>
-
-              <ul className="mt-6 space-y-4">
-
-                {footerLinks.explore.map(
-                  (link) => (
-
+              {/* EXPLORE & SHOP */}
+              <div>
+                <h3 className="font-sans text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground">
+                  Explore
+                </h3>
+                <ul className="mt-4 space-y-3">
+                  {footerLinks.curated.map((link) => (
                     <li key={link.href}>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                        >
+                          <span>{link.label}</span>
+                          <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
+                        </a>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="text-sm text-muted-foreground hover:text-foreground"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
+              {/* COMPANY & LEGAL */}
+              <div className="col-span-2 sm:col-span-1">
+                <h3 className="font-sans text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground">
+                  Information
+                </h3>
+                <ul className="mt-4 space-y-3">
+                  {footerLinks.company.map((link) => (
+                    <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="
-                          text-[15px]
-                          text-[#6c6058]
-                          transition
-                          hover:text-foreground
-                        "
+                        className="text-sm text-muted-foreground hover:text-foreground"
                       >
                         {link.label}
                       </Link>
-
                     </li>
-
-                  )
-                )}
-
-              </ul>
-
+                  ))}
+                </ul>
+              </div>
             </div>
-
-            {/* COMPANY */}
-
-            <div>
-
-              <h4
-                className="
-                  text-[11px]
-                  uppercase
-                  tracking-[0.25em]
-                  text-muted-foreground
-                "
-              >
-                Company
-              </h4>
-
-              <ul className="mt-6 space-y-4">
-
-                {footerLinks.company.map(
-                  (link) => (
-
-                    <li key={link.href}>
-
-                      <Link
-                        href={link.href}
-                        className="
-                          text-[15px]
-                          text-[#6c6058]
-                          transition
-                          hover:text-foreground
-                        "
-                      >
-                        {link.label}
-                      </Link>
-
-                    </li>
-
-                  )
-                )}
-
-              </ul>
-
-            </div>
-
           </div>
 
-          {/* BOTTOM */}
-
-          <div
-            className="
-              mt-20
-              flex
-              flex-col
-              items-center
-              justify-between
-              gap-4
-              border-t
-              border-border
-              pt-8
-              text-sm
-              text-muted-foreground
-              md:flex-row
-            "
-          >
-
-            <p>
-              © {new Date().getFullYear()} VelvetNest.
-              All rights reserved.
-            </p>
-
-            <p>
-              Designed for slow, beautiful living.
-            </p>
-
+          {/* BOTTOM COPYRIGHT & FTC COMPLIANCE NOTE */}
+          <div className="mt-14 border-t border-border pt-8">
+            <div className="flex flex-col items-start justify-between gap-4 text-xs text-muted-foreground md:flex-row md:items-center">
+              <p>
+                © {new Date().getFullYear()} VelvetNest. All rights reserved.
+              </p>
+              <p className="max-w-xl text-left md:text-right leading-relaxed">
+                VelvetNest participates in the Amazon Services LLC Associates
+                Program. As an Amazon Associate, we earn from qualifying
+                purchases at no extra cost to you.
+              </p>
+            </div>
           </div>
-
         </div>
-
       </section>
-
     </footer>
   )
-                }
+      }
+      
