@@ -12,7 +12,7 @@ import { urlFor } from "@/sanity/lib/image"
 
 export const revalidate = 60
 
-const AMAZON_STOREFRONT_URL = "https://a.co/d/0i6traEg"
+const AMAZON_STOREFRONT_URL = "https://a.co/d/0i54mdf3"
 
 export const metadata: Metadata = {
   title: "Curated Amazon Finds — Home Decor, Fashion & Beauty",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 async function getAmazonFinds() {
   try {
-    return await client.fetch(`
+    const data = await client.fetch(`
       *[_type == "amazonFind"] | order(_createdAt desc){
         _id,
         title,
@@ -38,6 +38,7 @@ async function getAmazonFinds() {
         image
       }
     `)
+    return data || []
   } catch {
     return []
   }
@@ -103,27 +104,43 @@ export default async function AmazonFindsPage() {
 
           {products && products.length > 0 ? (
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {products.map((item: any) => (
-                <ProductCard
-                  key={item._id}
-                  title={item.title}
-                  price={item.price}
-                  originalPrice={item.originalPrice}
-                  category={item.category || "Amazon Find"}
-                  recommendation={item.recommendation}
-                  link={item.link || item.amazonUrl || AMAZON_STOREFRONT_URL}
-                  image={
-                    item.image
-                      ? typeof item.image === "string"
-                        ? item.image
-                        : urlFor(item.image).width(600).url()
-                      : undefined
+              {products.map((item: any) => {
+                /* Safe string conversions to prevent React object children errors */
+                const safeTitle = typeof item.title === "string" ? item.title : "Featured Find"
+                const safePrice = typeof item.price === "string" ? item.price : item.price?.toString()
+                const safeOriginalPrice = typeof item.originalPrice === "string" ? item.originalPrice : item.originalPrice?.toString()
+                const safeCategory = typeof item.category === "string" ? item.category : "Amazon Find"
+                const safeRecommendation = typeof item.recommendation === "string" ? item.recommendation : undefined
+                const safeLink = item.link || item.amazonUrl || AMAZON_STOREFRONT_URL
+
+                let imageUrl: string | undefined = undefined
+                try {
+                  if (item.image) {
+                    if (typeof item.image === "string") {
+                      imageUrl = item.image
+                    } else if (item.image.asset) {
+                      imageUrl = urlFor(item.image).width(600).url()
+                    }
                   }
-                />
-              ))}
+                } catch {
+                  imageUrl = undefined
+                }
+
+                return (
+                  <ProductCard
+                    key={item._id}
+                    title={safeTitle}
+                    price={safePrice}
+                    originalPrice={safeOriginalPrice}
+                    category={safeCategory}
+                    recommendation={safeRecommendation}
+                    link={safeLink}
+                    image={imageUrl}
+                  />
+                )
+              })}
             </div>
           ) : (
-            /* Curated Storefront Category Portals if no individual products are in Sanity yet */
             <div className="mt-10 grid gap-6 md:grid-cols-3">
               {[
                 {
@@ -175,4 +192,4 @@ export default async function AmazonFindsPage() {
       <Footer />
     </div>
   )
-              }
+}
