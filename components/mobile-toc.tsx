@@ -1,10 +1,8 @@
 "use client"
 
 import Link from "next/link"
-
-/* =========================================================
-   TYPES
-========================================================= */
+import { useState } from "react"
+import { ChevronDown, List } from "lucide-react"
 
 interface TOCItem {
   text: string
@@ -16,106 +14,62 @@ interface MobileTOCProps {
   items?: TOCItem[]
 }
 
-/* =========================================================
-   MOBILE TOC
-========================================================= */
+export default function MobileTOC({ items = [] }: MobileTOCProps) {
+  const [isOpen, setIsOpen] = useState(false)
 
-export default function MobileTOC({
-  items = [],
-}: MobileTOCProps) {
-
-  if (!items.length) {
-    return null
-  }
+  if (!items.length) return null
 
   return (
-
-    <div
-      className="
-        rounded-[2rem]
-        border
-        border-border
-        bg-card/80
-        p-6
-        backdrop-blur-xl
-      "
-    >
-
-      {/* LABEL */}
-
-      <p
-        className="
-          text-[10px]
-          uppercase
-          tracking-[0.25em]
-          text-muted-foreground
-        "
+    <div className="rounded-2xl border border-border bg-card/90 shadow-2xs">
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between px-5 py-4 text-left"
       >
-        Quick Navigation
-      </p>
+        <div className="flex items-center gap-2.5">
+          <List className="h-4 w-4 text-accent" />
+          <span className="font-serif text-lg font-medium text-foreground">
+            Table of Contents
+          </span>
+          <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+            {items.length}
+          </span>
+        </div>
 
-      {/* TITLE */}
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
 
-      <h3
-        className="
-          mt-3
-          font-serif
-          text-[2rem]
-          leading-none
-          tracking-[-0.04em]
-          text-foreground
-        "
-      >
-        Contents
-      </h3>
-
-      {/* LIST */}
-
-      <ul className="mt-7 space-y-4">
-
-        {items.map((item) => (
-
-          <li
-            key={item.id}
-            className={
-              item.level === "h3"
-                ? "ml-5"
-                : ""
-            }
-          >
-
-            <Link
-              href={`#${item.id}`}
-              className={`
-                block
-                transition-all
-                duration-300
-                hover:translate-x-1
-                ${
-                  item.level === "h3"
-                    ? "text-[0.95rem] text-[#7b6f66]"
-                    : "text-[1rem] text-[#5d524a]"
-                }
-              `}
-            >
-
-              <span
-                className="
-                  leading-7
-                  hover:text-foreground
-                "
+      {isOpen && (
+        <nav
+          aria-label="Mobile Table of Contents"
+          className="border-t border-border/70 px-5 py-4"
+        >
+          <ul className="space-y-3">
+            {items.map((item, idx) => (
+              <li
+                key={item.id}
+                className={item.level === "h3" ? "pl-4" : ""}
               >
-                {item.text}
-              </span>
-
-            </Link>
-
-          </li>
-
-        ))}
-
-      </ul>
-
+                <Link
+                  href={`#${item.id}`}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-baseline gap-2.5 text-sm leading-snug text-muted-foreground hover:text-foreground"
+                >
+                  <span className="text-[11px] font-medium text-accent">
+                    {String(idx + 1).padStart(2, "0")}.
+                  </span>
+                  <span>{item.text}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </div>
   )
 }
